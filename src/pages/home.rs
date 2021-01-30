@@ -26,8 +26,13 @@ pub struct Home {
     task: Option<FetchTask>,
 }
 
+pub enum SearchType {
+    by_name,
+    family,
+}
+
 pub enum Msg {
-    GetSearch(String),
+    GetSearch(SearchType, Option<String>),
     GetSearchSuccess(CypherResult),
     GetSearchError(Error),
 }
@@ -39,8 +44,7 @@ impl Component for Home {
     fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
         let family = vec![];
 
-
-        link.send_message(Msg::GetSearch("Alan".to_string()));
+        link.send_message(Msg::GetSearch(SearchType::family, None));
 
         Self {
             props,
@@ -56,23 +60,50 @@ impl Component for Home {
 
     fn update(&mut self, message: Self::Message) -> ShouldRender {
         match message {
-            Msg::GetSearch(name) => {
-                self.state.get_search_loaded = false;
-                let handler =
-                    self.link
-                        .callback(move |response: api::FetchResponse<CypherResult>| {
-                            ConsoleService::debug(format!("Json Response {:?}", response).as_str());
-                            let (_, Json(data)) = response.into_parts();
-                            ConsoleService::debug(format!("Json Parts {:?}", data).as_str());
-                            match data {
-                                Ok(family) => Msg::GetSearchSuccess(family),
-                                Err(err) => Msg::GetSearchError(err),
-                            }
-                        });
-                ConsoleService::info(format!("Searching for {}", name).as_str());
-                self.task = Some(api::search(name, handler));
-                false
-            }
+            Msg::GetSearch(search_type, name) => match search_type {
+                SearchType::by_name => {
+                    self.state.get_search_loaded = false;
+                    let handler =
+                        self.link
+                            .callback(move |response: api::FetchResponse<CypherResult>| {
+                                ConsoleService::debug(
+                                    format!("Json Response {:?}", response).as_str(),
+                                );
+                                let (_, Json(data)) = response.into_parts();
+                                ConsoleService::debug(format!("Json Parts {:?}", data).as_str());
+                                match data {
+                                    Ok(family) => Msg::GetSearchSuccess(family),
+                                    Err(err) => Msg::GetSearchError(err),
+                                }
+                            });
+                    ConsoleService::info(
+                        format!("Searching for {}", name.clone().unwrap()).as_str(),
+                    );
+                    self.task = Some(api::search(name.unwrap(), handler.clone()));
+                    false
+                }
+                SearchType::family => {
+                    self.state.get_search_loaded = false;
+
+                    let handler =
+                        self.link
+                            .callback(move |response: api::FetchResponse<CypherResult>| {
+                                ConsoleService::debug(
+                                    format!("Json Response {:?}", response).as_str(),
+                                );
+                                let (_, Json(data)) = response.into_parts();
+                                ConsoleService::debug(format!("Json Parts {:?}", data).as_str());
+                                match data {
+                                    Ok(family) => Msg::GetSearchSuccess(family),
+                                    Err(err) => Msg::GetSearchError(err),
+                                }
+                            });
+
+                    ConsoleService::info("Searching for Family");
+                    self.task = Some(api::family(handler));
+                    false
+                }
+            },
             Msg::GetSearchSuccess(cypher_result) => {
                 let rows: Vec<Row> = cypher_result.rows().collect();
                 let family: Vec<Person> = rows
@@ -124,7 +155,9 @@ impl Component for Home {
             })
             .collect();
 
-        let search_handler = self.link.callback(|name: String| Msg::GetSearch(name));
+        let search_handler = self
+            .link
+            .callback(|name: String| Msg::GetSearch(SearchType::by_name, Some(name)));
 
         if !self.state.get_search_loaded {
             html! {
