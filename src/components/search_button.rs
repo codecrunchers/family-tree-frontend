@@ -2,6 +2,7 @@ use yew::prelude::*;
 
 pub struct SearchButton {
     props: Props,
+    value: String,
     link: ComponentLink<Self>,
 }
 
@@ -12,6 +13,7 @@ pub struct Props {
 
 pub enum Msg {
     Search,
+    SetValue(String),
 }
 
 impl Component for SearchButton {
@@ -19,13 +21,20 @@ impl Component for SearchButton {
     type Properties = Props;
 
     fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
-        Self { props, link }
+        Self {
+            props,
+            value: "".to_string(),
+            link,
+        }
     }
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
         match msg {
+            Msg::SetValue(v) => {
+                self.value = v;
+            }
             Msg::Search => {
-                let name = "Beth";
+                let name = self.value.clone();
                 self.props.on_search.emit(name.to_string());
             }
         }
@@ -38,14 +47,11 @@ impl Component for SearchButton {
     }
 
     fn view(&self) -> Html {
-
         html! {
             <>
-                <input
-                    type="text"
-                    class="msger-input"
-                    id="search-box"
-                />
+                <input type="text", /*oninput=|i: InputData| Msg::SetValue(i.value)/>*/
+                oninput=self.link.callback(|i: InputData | Msg::SetValue(i.value))/>
+
                 <button
                     class="msger-send-btn"
                     onclick=self.link.callback(|_| Msg::Search)
