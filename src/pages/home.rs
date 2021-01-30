@@ -1,9 +1,11 @@
 use crate::api;
-use crate::types::Person;
+use crate::types::{Person, QueryResponse};
 use anyhow::Error;
+use rusted_cypher::cypher::result::{CypherResult, Row};
 use yew::format::Json;
 use yew::prelude::*;
 use yew::services::fetch::FetchTask;
+use yew::services::ConsoleService;
 
 struct State {
     family: Vec<Person>,
@@ -26,7 +28,7 @@ pub struct Home {
 
 pub enum Msg {
     GetSearch(String),
-    GetSearchSuccess(Vec<Person>),
+    GetSearchSuccess(CypherResult),
     GetSearchError(Error),
 }
 
@@ -37,7 +39,7 @@ impl Component for Home {
     fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
         let family = vec![];
 
-        link.send_message(Msg::GetSearch("Beth".to_string()));
+        link.send_message(Msg::GetSearch("Alan".to_string()));
 
         Self {
             props,
@@ -57,8 +59,10 @@ impl Component for Home {
                 self.state.get_search_loaded = false;
                 let handler =
                     self.link
-                        .callback(move |response: api::FetchResponse<Vec<Person>>| {
+                        .callback(move |response: api::FetchResponse<CypherResult>| {
+                            ConsoleService::debug(format!("Json Response {:?}", response).as_str());
                             let (_, Json(data)) = response.into_parts();
+                            ConsoleService::debug(format!("Json Parts {:?}", data).as_str());
                             match data {
                                 Ok(family) => Msg::GetSearchSuccess(family),
                                 Err(err) => Msg::GetSearchError(err),
@@ -68,8 +72,23 @@ impl Component for Home {
                 self.task = Some(api::search(name, handler));
                 false
             }
-            Msg::GetSearchSuccess(family) => {
+            Msg::GetSearchSuccess(cypher_result) => {
+                let rows: Vec<Row> = cypher_result.rows().collect();
+                let family: Vec<Person> = rows
+                    .iter()
+                    .map(|row| Person {
+                        pid: row.get::<i32>("p.pid").unwrap(),
+                        name: row.get::<String>("p.name").unwrap(),
+                        bio: row.get::<String>("p.bio").unwrap(),
+                        //                        image: row.get::<String>("p.image").unwrap(),
+                        dob: row.get::<String>("p.dob").unwrap(),
+                        //                      dod: row.get::<String>("p.dod").unwrap(),
+                    })
+                    .collect();
+
                 self.state.family = family;
+
+                ConsoleService::debug(format!("Family {:?}", self.state.family).as_str());
                 self.state.get_search_loaded = true;
                 true
             }
@@ -87,7 +106,22 @@ impl Component for Home {
     }
 
     fn view(&self) -> Html {
-        let family: Vec<Html> = vec![];
+        let family: Vec<Html> = self
+            .state
+            .family
+            .iter()
+            .map(|person: &Person| {
+                html! {
+                <div class="product_card_container">
+                    <div  classes="product_card_anchor">
+                        <div class="product_card_name">{&person.name}</div>
+                        <div class="product_card_name">{&person.bio}</div>
+                        <div class="product_card_name">{person.pid}</div>
+                    </div>
+                </div>
+                    }
+            })
+            .collect();
 
         if !self.state.get_search_loaded {
             html! {

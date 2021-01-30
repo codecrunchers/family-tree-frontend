@@ -13,3 +13,4 @@ yew-router = "0.14.0"
 wasm-bindgen = "0.2"
 anyhow = "1.0.32"
 serde = { version = "1.0", features = ["derive"] }
+rusted_cypher={ path = "/home/alan/devel/rusted-cypher", branch="neo4j_41" }
