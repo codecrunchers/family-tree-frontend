@@ -39,7 +39,7 @@ impl Component for Navbar {
             <div class="navbar">
                 <div class="navbar_title">{"RustMart"}</div>
               <div class="navbar_cart_value">{format!("${:.2}", cart_value)}</div>
-              <SearchButton name="".into() on_search=self.props.on_search.clone() />
+              <SearchButton name="Alan Ryan".to_string() on_search=self.props.on_search.clone() />
             </div>
         }
     }

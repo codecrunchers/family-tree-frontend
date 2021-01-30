@@ -69,13 +69,13 @@ impl Component for App {
                 html! {<ProductDetail id=id on_add_to_cart=handle_add_to_cart.clone() />}
             }
             Route::HomePage => {
-                html! {<Home cart_products=cart_products.clone() on_add_to_cart=handle_add_to_cart.clone()/>}
+                html! {<Home cart_products=cart_products.clone() on_add_to_cart=handle_add_to_cart.clone() />}
             }
         });
 
         html! {
             <>
-                <Navbar cart_products=self.state.cart_products.clone() />
+                <Navbar cart_products=self.state.cart_products.clone()/>
                 <Router<Route, ()> render=render/>
             </>
         }

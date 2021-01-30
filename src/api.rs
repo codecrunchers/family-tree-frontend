@@ -22,3 +22,11 @@ pub fn get_product(id: i32, callback: FetchCallback<Product>) -> FetchTask {
 
     FetchService::fetch(req, callback).unwrap()
 }
+
+pub fn search(name: String, callback: FetchCallback<Option<String>>) -> FetchTask {
+    let req = Request::get("http://localhost:3000/search/Beth")
+        .body(Nothing)
+        .unwrap();
+
+    FetchService::fetch(req, callback).unwrap()
+}
