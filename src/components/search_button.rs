@@ -49,9 +49,7 @@ impl Component for SearchButton {
     fn view(&self) -> Html {
         html! {
             <>
-                <input type="text", /*oninput=|i: InputData| Msg::SetValue(i.value)/>*/
-                oninput=self.link.callback(|i: InputData | Msg::SetValue(i.value))/>
-
+                <input type="text", oninput=self.link.callback(|i: InputData | Msg::SetValue(i.value))/>
                 <button
                     class="msger-send-btn"
                     onclick=self.link.callback(|_| Msg::Search)

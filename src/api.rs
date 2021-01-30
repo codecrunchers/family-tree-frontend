@@ -16,3 +16,11 @@ pub fn search(name: String, callback: FetchCallback<CypherResult>) -> FetchTask 
     ConsoleService::debug(format!("Req {:?}", req).as_str());
     FetchService::fetch(req, callback).unwrap()
 }
+
+pub fn family(callback: FetchCallback<CypherResult>) -> FetchTask {
+    let req = Request::get(format!("http://localhost:9090/family"))
+        .body(Nothing)
+        .unwrap();
+    ConsoleService::debug(format!("Req {:?}", req).as_str());
+    FetchService::fetch(req, callback).unwrap()
+}

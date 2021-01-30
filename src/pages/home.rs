@@ -39,6 +39,7 @@ impl Component for Home {
     fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
         let family = vec![];
 
+
         link.send_message(Msg::GetSearch("Alan".to_string()));
 
         Self {
