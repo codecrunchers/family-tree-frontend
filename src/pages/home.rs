@@ -1,21 +1,20 @@
 use crate::api;
-use crate::components::ProductCard;
-use crate::types::{CartProduct, Product};
+use crate::types::Person;
 use anyhow::Error;
 use yew::format::Json;
 use yew::prelude::*;
 use yew::services::fetch::FetchTask;
 
 struct State {
-    products: Vec<Product>,
-    get_products_error: Option<Error>,
-    get_products_loaded: bool,
+    family: Vec<Person>,
+    get_search_error: Option<Error>,
+    get_search_loaded: bool,
 }
 
 #[derive(Properties, Clone)]
 pub struct Props {
-    pub cart_products: Vec<CartProduct>,
-    pub on_add_to_cart: Callback<Product>,
+    pub family: Vec<Person>,
+    pub on_search: Callback<String>,
 }
 
 pub struct Home {
@@ -26,9 +25,9 @@ pub struct Home {
 }
 
 pub enum Msg {
-    GetProducts,
-    GetProductsSuccess(Vec<Product>),
-    GetProductsError(Error),
+    GetSearch(String),
+    GetSearchSuccess(Vec<Person>),
+    GetSearchError(Error),
 }
 
 impl Component for Home {
@@ -36,16 +35,16 @@ impl Component for Home {
     type Properties = Props;
 
     fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
-        let products = vec![];
+        let family = vec![];
 
-        link.send_message(Msg::GetProducts);
+        link.send_message(Msg::GetSearch("Beth".to_string()));
 
         Self {
             props,
             state: State {
-                products,
-                get_products_error: None,
-                get_products_loaded: false,
+                family,
+                get_search_error: None,
+                get_search_loaded: false,
             },
             link,
             task: None,
@@ -54,29 +53,29 @@ impl Component for Home {
 
     fn update(&mut self, message: Self::Message) -> ShouldRender {
         match message {
-            Msg::GetProducts => {
-                self.state.get_products_loaded = false;
+            Msg::GetSearch(name) => {
+                self.state.get_search_loaded = false;
                 let handler =
                     self.link
-                        .callback(move |response: api::FetchResponse<Vec<Product>>| {
+                        .callback(move |response: api::FetchResponse<Vec<Person>>| {
                             let (_, Json(data)) = response.into_parts();
                             match data {
-                                Ok(products) => Msg::GetProductsSuccess(products),
-                                Err(err) => Msg::GetProductsError(err),
+                                Ok(family) => Msg::GetSearchSuccess(family),
+                                Err(err) => Msg::GetSearchError(err),
                             }
                         });
 
-                self.task = Some(api::get_products(handler));
+                self.task = Some(api::search(name, handler));
+                false
+            }
+            Msg::GetSearchSuccess(family) => {
+                self.state.family = family;
+                self.state.get_search_loaded = true;
                 true
             }
-            Msg::GetProductsSuccess(products) => {
-                self.state.products = products;
-                self.state.get_products_loaded = true;
-                true
-            }
-            Msg::GetProductsError(error) => {
-                self.state.get_products_error = Some(error);
-                self.state.get_products_loaded = true;
+            Msg::GetSearchError(error) => {
+                self.state.get_search_error = Some(error);
+                self.state.get_search_loaded = true;
                 true
             }
         }
@@ -88,33 +87,25 @@ impl Component for Home {
     }
 
     fn view(&self) -> Html {
-        let products: Vec<Html> = self
-            .state
-            .products
-            .iter()
-            .map(|product: &Product| {
-                html! {
-                  <ProductCard product={product} on_add_to_cart=self.props.on_add_to_cart.clone()/>
-                }
-            })
-            .collect();
+        let family: Vec<Html> = vec![];
 
-        if !self.state.get_products_loaded {
+        if !self.state.get_search_loaded {
             html! {
                 <div class="loading_spinner_container">
                     <div class="loading_spinner"></div>
                     <div class="loading_spinner_text">{"Loading ..."}</div>
                 </div>
             }
-        } else if let Some(_) = self.state.get_products_error {
+        } else if let Some(error) = &self.state.get_search_error {
             html! {
               <div>
                 <span>{"Error loading products! :("}</span>
+                <div>{error}</div>
               </div>
             }
         } else {
             html! {
-                <div class="product_card_list">{products}</div>
+                <div class="product_card_list">{family}</div>
             }
         }
     }

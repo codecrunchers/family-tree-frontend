@@ -1,13 +1,12 @@
-use crate::components::Navbar;
-use crate::types::{CartProduct, Product};
+use crate::pages::Home;
+use crate::route::Route;
+use crate::types::Person;
 use yew::prelude::*;
+use yew::services::ConsoleService;
 use yew_router::prelude::*;
 
-use crate::pages::{Home, ProductDetail};
-use crate::route::Route;
-
 struct State {
-    cart_products: Vec<CartProduct>,
+    family: Vec<Person>,
 }
 
 pub struct App {
@@ -16,7 +15,7 @@ pub struct App {
 }
 
 pub enum Msg {
-    AddToCart(Product),
+    Search(String),
 }
 
 impl Component for App {
@@ -24,33 +23,17 @@ impl Component for App {
     type Properties = ();
 
     fn create(_: Self::Properties, link: ComponentLink<Self>) -> Self {
-        let cart_products = vec![];
+        let family = vec![];
 
         Self {
-            state: State { cart_products },
+            state: State { family },
             link,
         }
     }
 
     fn update(&mut self, message: Self::Message) -> ShouldRender {
         match message {
-            Msg::AddToCart(product) => {
-                let cart_product = self
-                    .state
-                    .cart_products
-                    .iter_mut()
-                    .find(|cp: &&mut CartProduct| cp.product.id == product.id);
-
-                if let Some(cp) = cart_product {
-                    cp.quantity += 1;
-                } else {
-                    self.state.cart_products.push(CartProduct {
-                        product: product.clone(),
-                        quantity: 1,
-                    })
-                }
-                true
-            }
+            Msg::Search(_name) => true,
         }
     }
 
@@ -59,23 +42,19 @@ impl Component for App {
     }
 
     fn view(&self) -> Html {
-        let handle_add_to_cart = self
-            .link
-            .callback(|product: Product| Msg::AddToCart(product));
-        let cart_products = self.state.cart_products.clone();
+        let handle_search = self.link.callback(|name: String| Msg::Search(name));
+        let family = self.state.family.clone();
+
+        ConsoleService::info(format!("Family = {:?}", family).as_str());
 
         let render = Router::render(move |switch: Route| match switch {
-            Route::ProductDetail(id) => {
-                html! {<ProductDetail id=id on_add_to_cart=handle_add_to_cart.clone() />}
-            }
             Route::HomePage => {
-                html! {<Home cart_products=cart_products.clone() on_add_to_cart=handle_add_to_cart.clone() />}
+                html! {<Home family=family.clone() on_search=handle_search.clone() />}
             }
         });
 
         html! {
             <>
-                <Navbar cart_products=self.state.cart_products.clone()/>
                 <Router<Route, ()> render=render/>
             </>
         }
