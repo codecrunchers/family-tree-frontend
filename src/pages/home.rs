@@ -1,5 +1,6 @@
 use crate::api;
-use crate::types::{Person, QueryResponse};
+use crate::components::SearchButton;
+use crate::types::Person;
 use anyhow::Error;
 use rusted_cypher::cypher::result::{CypherResult, Row};
 use yew::format::Json;
@@ -16,7 +17,6 @@ struct State {
 #[derive(Properties, Clone)]
 pub struct Props {
     pub family: Vec<Person>,
-    pub on_search: Callback<String>,
 }
 
 pub struct Home {
@@ -68,7 +68,7 @@ impl Component for Home {
                                 Err(err) => Msg::GetSearchError(err),
                             }
                         });
-
+                ConsoleService::info(format!("Searching for {}", name).as_str());
                 self.task = Some(api::search(name, handler));
                 false
             }
@@ -123,23 +123,34 @@ impl Component for Home {
             })
             .collect();
 
+        let search_handler = self.link.callback(|name: String| Msg::GetSearch(name));
+
         if !self.state.get_search_loaded {
             html! {
-                <div class="loading_spinner_container">
-                    <div class="loading_spinner"></div>
-                    <div class="loading_spinner_text">{"Loading ..."}</div>
-                </div>
-            }
+            <>
+                            <SearchButton on_search=search_handler.clone() />
+                            <div class="loading_spinner_container">
+                                <div class="loading_spinner"></div>
+                                <div class="loading_spinner_text">{"Loading ..."}</div>
+                            </div>
+                            </>
+                        }
         } else if let Some(error) = &self.state.get_search_error {
             html! {
+                <>
+                <SearchButton on_search=search_handler.clone() />
               <div>
                 <span>{"Error loading products! :("}</span>
                 <div>{error}</div>
               </div>
+              </>
             }
         } else {
             html! {
-                <div class="product_card_list">{family}</div>
+              <>
+              <SearchButton on_search=search_handler.clone() />
+              <div class="product_card_list">{family}</div>
+                </>
             }
         }
     }

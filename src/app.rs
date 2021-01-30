@@ -1,3 +1,4 @@
+use crate::components::SearchButton;
 use crate::pages::Home;
 use crate::route::Route;
 use crate::types::Person;
@@ -49,7 +50,7 @@ impl Component for App {
 
         let render = Router::render(move |switch: Route| match switch {
             Route::HomePage => {
-                html! {<Home family=family.clone() on_search=handle_search.clone() />}
+                html! {<Home family=family.clone()  />}
             }
         });
 
