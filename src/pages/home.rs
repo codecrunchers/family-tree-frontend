@@ -1,5 +1,5 @@
 use crate::api;
-use crate::components::SearchButton;
+use crate::components::{call_vega, BioPanel, GraphPanel, SearchButton};
 use crate::types::Person;
 use anyhow::Error;
 use rusted_cypher::cypher::result::{CypherResult, Row};
@@ -27,8 +27,8 @@ pub struct Home {
 }
 
 pub enum SearchType {
-    by_name,
-    family,
+    BY_NAME,
+    FAMILY,
 }
 
 pub enum Msg {
@@ -44,7 +44,7 @@ impl Component for Home {
     fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
         let family = vec![];
 
-        link.send_message(Msg::GetSearch(SearchType::family, None));
+        link.send_message(Msg::GetSearch(SearchType::FAMILY, None));
 
         Self {
             props,
@@ -61,7 +61,7 @@ impl Component for Home {
     fn update(&mut self, message: Self::Message) -> ShouldRender {
         match message {
             Msg::GetSearch(search_type, name) => match search_type {
-                SearchType::by_name => {
+                SearchType::BY_NAME => {
                     self.state.get_search_loaded = false;
                     let handler =
                         self.link
@@ -82,7 +82,7 @@ impl Component for Home {
                     self.task = Some(api::search(name.unwrap(), handler.clone()));
                     false
                 }
-                SearchType::family => {
+                SearchType::FAMILY => {
                     self.state.get_search_loaded = false;
 
                     let handler =
@@ -138,31 +138,13 @@ impl Component for Home {
     }
 
     fn view(&self) -> Html {
-        let family: Vec<Html> = self
-            .state
-            .family
-            .iter()
-            .map(|person: &Person| {
-                html! {
-                <div class="product_card_container">
-                    <div  classes="product_card_anchor">
-                        <div class="product_card_name">{&person.name}</div>
-                        <div class="product_card_name">{&person.bio}</div>
-                        <div class="product_card_name">{person.pid}</div>
-                    </div>
-                </div>
-                    }
-            })
-            .collect();
-
         let search_handler = self
             .link
-            .callback(|name: String| Msg::GetSearch(SearchType::by_name, Some(name)));
+            .callback(|name: String| Msg::GetSearch(SearchType::BY_NAME, Some(name)));
 
         if !self.state.get_search_loaded {
             html! {
             <>
-                            <SearchButton on_search=search_handler.clone() />
                             <div class="loading_spinner_container">
                                 <div class="loading_spinner"></div>
                                 <div class="loading_spinner_text">{"Loading ..."}</div>
@@ -172,9 +154,8 @@ impl Component for Home {
         } else if let Some(error) = &self.state.get_search_error {
             html! {
                 <>
-                <SearchButton on_search=search_handler.clone() />
               <div>
-                <span>{"Error loading products! :("}</span>
+                <span>{"Error loading family! :("}</span>
                 <div>{error}</div>
               </div>
               </>
@@ -182,9 +163,9 @@ impl Component for Home {
         } else {
             html! {
               <>
-              <SearchButton on_search=search_handler.clone() />
-              <div class="product_card_list">{family}</div>
-                </>
+                  <SearchButton on_search=search_handler.clone() />
+                  <BioPanel family=self.state.family.clone()/>
+              </>
             }
         }
     }

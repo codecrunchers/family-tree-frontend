@@ -1,4 +1,4 @@
-use crate::components::SearchButton;
+use crate::components::GraphPanel;
 use crate::pages::Home;
 use crate::route::Route;
 use crate::types::Person;
@@ -56,6 +56,7 @@ impl Component for App {
 
         html! {
             <>
+                <GraphPanel family=self.state.family.clone()/>
                 <Router<Route, ()> render=render/>
             </>
         }

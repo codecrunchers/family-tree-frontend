@@ -1,16 +1,47 @@
 [package]
-name = "rustmart"
-version = "0.1.0"
 authors = ["sheshbabu <sheshbabu@gmail.com>"]
 edition = "2018"
+name = "rustmart"
+version = "0.1.0"
+
+[dependencies]
+# The `console_error_panic_hook` crate provides better debugging of panics by
+# logging them with `console.error`. This is great for development, but requires
+# all the `std::fmt` and `std::panicking` infrastructure, so isn't great for
+# code size when deploying.
+console_error_panic_hook = { version = "0.1.6", optional = true }
+
+# `wee_alloc` is a tiny allocator for wasm that is only ~1K in code size
+# compared to the default allocator's ~10K. It is slower than the default
+# allocator, however.
+#
+# Unfortunately, `wee_alloc` requires nightly Rust when targeting wasm for now.
+wee_alloc = { version = "0.4.5", optional = true }
+
+
+anyhow = "1.0.32"
+js-sys = "0.3.47"
+vega_lite_3 = "0.3.1"
+wasm-bindgen = { version = "0.2.70", features = ["serde-serialize"] }
+
+wasm-bindgen-futures = "0.4.20"
+futures-timer = { version = "3.0.2", features = ["wasm-bindgen"] }
+web-sys = { version = "0.3.47", features = ["Window", "Document", "Element", "HtmlElement"] }
+yew = "0.17"
+yew-router = "0.14.0"
+
+[dependencies.rusted_cypher]
+branch = "neo4j_41"
+path = "/home/alan/devel/rusted-cypher"
+
+[dependencies.serde]
+features = ["derive"]
+version = "1.0.123"
+
+[dev-dependencies]
+wasm-bindgen-test = "0.3.8"
+
+
 
 [lib]
 crate-type = ["cdylib", "rlib"]
-
-[dependencies]
-yew = "0.17"
-yew-router = "0.14.0"
-wasm-bindgen = "0.2"
-anyhow = "1.0.32"
-serde = { version = "1.0", features = ["derive"] }
-rusted_cypher={ path = "/home/alan/devel/rusted-cypher", branch="neo4j_41" }
