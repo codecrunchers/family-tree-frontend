@@ -1,5 +1,5 @@
 use crate::api;
-use crate::components::SearchButton;
+use crate::components::{BioPanel, SearchButton};
 use crate::types::Person;
 use anyhow::Error;
 use rusted_cypher::cypher::result::{CypherResult, Row};
@@ -138,23 +138,6 @@ impl Component for Home {
     }
 
     fn view(&self) -> Html {
-        let family: Vec<Html> = self
-            .state
-            .family
-            .iter()
-            .map(|person: &Person| {
-                html! {
-                <div class="product_card_container">
-                    <div  classes="product_card_anchor">
-                        <div class="product_card_name">{&person.name}</div>
-                        <div class="product_card_name">{&person.bio}</div>
-                        <div class="product_card_name">{person.pid}</div>
-                    </div>
-                </div>
-                    }
-            })
-            .collect();
-
         let search_handler = self
             .link
             .callback(|name: String| Msg::GetSearch(SearchType::by_name, Some(name)));
@@ -182,9 +165,9 @@ impl Component for Home {
         } else {
             html! {
               <>
-              <SearchButton on_search=search_handler.clone() />
-              <div class="product_card_list">{family}</div>
-                </>
+                  <SearchButton on_search=search_handler.clone() />
+                  <BioPanel family=self.state.family.clone()/>
+              </>
             }
         }
     }
