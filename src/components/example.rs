@@ -2,13 +2,13 @@ use crate::render_chart;
 use std::collections::HashMap;
 use vega_lite_3::*;
 use wasm_bindgen::prelude::*;
+use yew::prelude::*;
 use yew::services::ConsoleService;
 
 #[wasm_bindgen]
 pub fn call_vega() {
     //    femme::start(log::LevelFilter::Info).unwrap();
     let doc = web_sys::window().unwrap().document().unwrap();
-    //ConsoleService::debug(format!("doc {:?}", doc.body().unwrap().inner_text()).as_str());
     let target = doc.get_element_by_id("viz").unwrap();
 
     if let Ok(chart) = gen_chart() {
@@ -39,6 +39,7 @@ pub fn gen_chart() -> Result<Vegalite, Box<dyn std::error::Error>> {
                 .build()?,
         )
         .mark(Mark::Geoshape)
+        /*
         .transform(vec![TransformBuilder::default()
             .lookup("id")
             .from(LookupDataBuilder::default()
@@ -59,7 +60,7 @@ pub fn gen_chart() -> Result<Vegalite, Box<dyn std::error::Error>> {
                         .build()?,
                 )
                 .build()?,
-        )
+        )*/
         .build()?;
     Ok(chart)
 }

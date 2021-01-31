@@ -4,9 +4,7 @@ mod components;
 mod pages;
 mod route;
 mod types;
-mod utils;
 
-use crate::components::call_vega;
 use futures_timer::Delay;
 use std::collections::HashMap;
 use std::time::Duration;
@@ -14,10 +12,12 @@ use vega_lite_3::*;
 use wasm_bindgen::{prelude::*, JsCast};
 use wasm_bindgen_futures::*;
 use yew::prelude::*;
+extern crate console_error_panic_hook;
+use std::panic;
 
 #[wasm_bindgen(start)]
 pub fn run_app() {
-    utils::set_panic_hook();
+    panic::set_hook(Box::new(console_error_panic_hook::hook)); //this ain't doin much
     App::<app::App>::new().mount_to_body();
 }
 
