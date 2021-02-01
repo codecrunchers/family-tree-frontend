@@ -27,8 +27,8 @@ pub struct Home {
 }
 
 pub enum SearchType {
-    by_name,
-    family,
+    ByName,
+    FAMILY,
 }
 
 pub enum Msg {
@@ -44,7 +44,7 @@ impl Component for Home {
     fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
         let family = vec![];
 
-        link.send_message(Msg::GetSearch(SearchType::family, None));
+        link.send_message(Msg::GetSearch(SearchType::FAMILY, None));
 
         Self {
             props,
@@ -61,7 +61,7 @@ impl Component for Home {
     fn update(&mut self, message: Self::Message) -> ShouldRender {
         match message {
             Msg::GetSearch(search_type, name) => match search_type {
-                SearchType::by_name => {
+                SearchType::ByName => {
                     self.state.get_search_loaded = false;
                     let handler =
                         self.link
@@ -82,7 +82,7 @@ impl Component for Home {
                     self.task = Some(api::search(name.unwrap(), handler.clone()));
                     false
                 }
-                SearchType::family => {
+                SearchType::FAMILY => {
                     self.state.get_search_loaded = false;
 
                     let handler =
@@ -140,7 +140,7 @@ impl Component for Home {
     fn view(&self) -> Html {
         let search_handler = self
             .link
-            .callback(|name: String| Msg::GetSearch(SearchType::by_name, Some(name)));
+            .callback(|name: String| Msg::GetSearch(SearchType::ByName, Some(name)));
 
         if !self.state.get_search_loaded {
             html! {
@@ -157,7 +157,7 @@ impl Component for Home {
                 <>
                 <SearchButton on_search=search_handler.clone() />
               <div>
-                <span>{"Error loading products! :("}</span>
+                <span>{"Error loading family! :("}</span>
                 <div>{error}</div>
               </div>
               </>

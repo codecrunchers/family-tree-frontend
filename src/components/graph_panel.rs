@@ -34,24 +34,17 @@ impl Component for GraphPanel {
     }
 
     fn view(&self) -> Html {
+        use crate::call_tree;
         html! {
-
-                    <>
-        <div class="tree">
-            <ul>
-                <li>
-                    <a href="#">{"Parent"}</a>
-                    <ul>
-                        <li>
-                            <a href="#">{"Child"}</a>
-                            <ul>
-                                <li>
-                                    <a href="#">{"Grand Child"}</a>
-                                </li>
-                    </ul>
-                </li>	</ul>	</li>	</ul></div>
-                </>
-
-                    }
+         <>
+             <div>{"Tree Representation"}</div>
+            <div id="myTree"></div>
+                <button
+                    class="msger-send-btn"
+                    onclick=self.link.callback(|_| call_tree() )
+                />
+             <div>{"Tree Representation"}</div>
+            </>
+        }
     }
 }
