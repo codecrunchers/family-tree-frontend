@@ -1,5 +1,5 @@
 use crate::api;
-use crate::components::{BioPanel, SearchButton};
+use crate::components::{BioPanel, GraphPanel, SearchButton};
 use crate::types::Person;
 use anyhow::Error;
 use rusted_cypher::cypher::result::{CypherResult, Row};
@@ -167,7 +167,8 @@ impl Component for Home {
               <>
                   <SearchButton on_search=search_handler.clone() />
                   <BioPanel family=self.state.family.clone()/>
-              </>
+                  <GraphPanel family=self.state.family.clone()/>
+                  </>
             }
         }
     }
