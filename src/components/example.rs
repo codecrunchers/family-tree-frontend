@@ -25,90 +25,40 @@ pub fn call_vega() {
 
 pub fn gen_chart() -> Result<Vegalite, Box<dyn std::error::Error>> {
     let spec = r##"
-    "$schema": "https://vega.github.io/schema/vega/v5.json",
-  "width": 200,
-  "height": 100,
-  "padding": 5,
-
-  "signals": [
-    { "name": "method", "value": "tidy",
-      "bind": {"input": "select", "options": ["tidy", "cluster"]} },
-    { "name": "separation", "value": true, "bind": {"input": "checkbox"} }
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v4.json",
+  "description": "A population pyramid for the US in 2000, created using stack. See https://vega.github.io/vega-lite/examples/concat_population_pyramid.html for a variant of this created using concat.",
+  "data": { "url": "https://raw.githubusercontent.com/vega/vega-datasets/master/data/population.json"},
+  "transform": [
+    {"filter": "datum.year == 2000"},
+    {"calculate": "datum.sex == 2 ? 'Female' : 'Male'", "as": "gender"},
+    {"calculate": "datum.sex == 2 ? -datum.people : datum.people", "as": "signed_people"}
   ],
-
-  "data": [
-    {
-      "name": "tree",
-      "values": [
-        {"id": "A", "parent": null},
-        {"id": "B", "parent": "A"},
-        {"id": "C", "parent": "A"},
-        {"id": "D", "parent": "C"},
-        {"id": "E", "parent": "C"}
-      ],
-      "transform": [
-        {
-          "type": "stratify",
-          "key": "id",
-          "parentKey": "parent"
-        },
-        {
-          "type": "tree",
-          "method": {"signal": "method"},
-          "separation": {"signal": "separation"},
-          "size": [{"signal": "width"}, {"signal": "height"}]
-        }
-      ]
+  "width": 300,
+  "height": 200,
+  "mark": "bar",
+  "encoding": {
+    "y": {
+      "field": "age", "type": "ordinal",
+      "axis": null, "sort": "descending"
     },
-    {
-      "name": "links",
-      "source": "tree",
-      "transform": [
-        { "type": "treelinks" },
-        { "type": "linkpath" }
-      ]
-    }
-  ],
-
-  "scales": [
-    {
-      "name": "color",
-      "type": "ordinal",
-      "range": {"scheme": "category20"}
-    }
-  ],
-
-  "marks": [
-    {
-      "type": "path",
-      "from": {"data": "links"},
-      "encode": {
-        "enter": {
-          "stroke": {"value": "#ccc"}
-        },
-        "update": {
-          "path": {"field": "path"}
-        }
-      }
+    "x": {
+      "aggregate": "sum", "field": "signed_people", "type": "quantitative",
+      "axis": {"title": "population", "format": "s"}
     },
-    {
-      "type": "symbol",
-      "from": {"data": "tree"},
-      "encode": {
-        "enter": {
-          "fill": {"scale": "color", "field": "id"},
-          "stroke": {"value": "white"},
-          "size": {"value": 400}
-        },
-        "update": {
-          "x": {"field": "x"},
-          "y": {"field": "y"}
-        }
-      }
+    "color": {
+      "field": "gender", "type": "nominal",
+      "scale": {"range": ["#e377c2", "#1f77b4"]},
+      "legend": {"orient": "top", "title": null}
     }
-  ]
-}##";
+  },
+  "config": {
+    "view": {"stroke": null},
+    "axis": {"grid": false}
+  }
+}
+"##;
 
-let chart: Vegalite = serde_json::from_str(spec)?;
+    let chart: Vegalite = serde_json::from_str(spec)?;
     Ok(chart)
 }
