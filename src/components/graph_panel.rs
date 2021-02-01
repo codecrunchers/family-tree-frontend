@@ -34,10 +34,17 @@ impl Component for GraphPanel {
     }
 
     fn view(&self) -> Html {
+        use crate::call_tree;
         html! {
-        <div id="container" style="width: 100vw; height: 100vh">
-            <div id="viz"></div>
-        </div>
+         <>
+             <div>{"Tree Representation"}</div>
+            <div id="myTree"></div>
+                <button
+                    class="msger-send-btn"
+                    onclick=self.link.callback(|_| call_tree() )
+                />
+             <div>{"Tree Representation"}</div>
+            </>
         }
     }
 }

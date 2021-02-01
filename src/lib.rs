@@ -6,6 +6,7 @@ mod route;
 mod types;
 
 use futures_timer::Delay;
+use serde_json::Value;
 use std::collections::HashMap;
 use std::time::Duration;
 use vega_lite_3::*;
@@ -14,6 +15,8 @@ use wasm_bindgen_futures::*;
 use yew::prelude::*;
 extern crate console_error_panic_hook;
 use std::panic;
+use types::JsTree;
+use yew::services::ConsoleService;
 
 #[wasm_bindgen(start)]
 pub fn run_app() {
@@ -39,6 +42,58 @@ static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 #[wasm_bindgen]
 extern "C" {
     fn vegaEmbed(target: web_sys::Element, spec: JsValue, option: JsValue) -> js_sys::Promise;
+}
+
+#[wasm_bindgen]
+extern "C" {
+    fn treeMaker(spec: JsValue, option: JsValue);
+}
+
+#[wasm_bindgen]
+pub fn call_tree() {
+    let tree = r##"{1: 'myTree'}"##;
+    let tree_opts = r##"{id: 'myTree', treeParams: { 1 : {'trad': 'Alan'}}}"##;
+    render_chart_1(tree.to_string(), tree_opts.to_string()).expect("to render it");
+}
+
+/// Render chart onto the web_sys::Element, with optional dict, allow resize if a container web_sys::Element is provided.
+pub fn render_chart_1(tree: String, tree_opts: String) -> Result<(), JsValue> /*Box<dyn std::error::Error>>*/
+{
+    let tree = r##"
+    {
+       "1":{
+          "2":"",
+          "3":{
+             "6":"",
+             "7":""
+          },
+          "4":"",
+          "5":""
+       }
+    }"##;
+
+    // Parse the string of data into serde_json::Value.
+    let v: Value = serde_json::from_str(tree).expect("bad tree json");
+
+    let mut names: std::collections::HashMap<String, String> = std::collections::HashMap::new();
+    names.insert("1".to_string(), "Alan".to_string());
+    names.insert("2".to_string(), "Barry".to_string());
+    names.insert("3".to_string(), "Sarah".to_string());
+    names.insert("4".to_string(), "Dad".to_string());
+    names.insert("5".to_string(), "Mam".to_string());
+    names.insert("6".to_string(), "Lou".to_string());
+    names.insert("7".to_string(), "Puppy".to_string());
+
+    let js_tree: JsTree = JsTree {
+        id: "myTree".to_string(),
+        treeParams: names,
+    };
+    let spec = JsValue::from_serde(&v).expect("bad json");
+    ConsoleService::debug(format!("spec for tree = {:?}", spec).as_str());
+    let spec_opts = JsValue::from_serde(&js_tree).expect("bad json opts");
+    ConsoleService::debug(format!("spec opts for tree = {:?}", spec_opts).as_str());
+    treeMaker(spec, spec_opts);
+    Ok(())
 }
 
 /// Render chart onto the web_sys::Element, with optional dict, allow resize if a container web_sys::Element is provided.

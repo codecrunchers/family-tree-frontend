@@ -14,3 +14,9 @@ pub struct Person {
     //    pub dod: String,
     pub dob: String,
 }
+
+#[derive(Deserialize, Serialize, Clone, Debug)]
+pub struct JsTree {
+    pub id: String,
+    pub treeParams: std::collections::HashMap<String, String>,
+}
