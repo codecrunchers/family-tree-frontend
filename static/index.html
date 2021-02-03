@@ -13,10 +13,9 @@
     />
     <link rel="stylesheet" type="text/css" href="/styles.css" />
 
-    <script src="js/tree_maker.js"></script>
-    <link rel="stylesheet" type="text/css" href="/css/tree_maker.css" />
-    <!-- Vega -->
-    <script src="//d3js.org/d3.v4.min.js"></script>
+    <script src="/js/cytoscape.umd.js"></script>
+    <script src="https://unpkg.com/webcola/WebCola/cola.min.js"></script>
+    <script src="cytoscape-cola.js"></script>
     <link rel="shortcut icon" href="#" />
   </head>
   <body>
@@ -25,7 +24,7 @@
       <div class="loading_spinner_text">Loading ...</div>
     </div>
        <script type="module">
-           import init, {call_tree} from "/wasm.js";           
+           import init from "/wasm.js";           
             init();
     </script>
   </body>

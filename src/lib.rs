@@ -12,10 +12,11 @@ use std::time::Duration;
 use vega_lite_3::*;
 use wasm_bindgen::{prelude::*, JsCast};
 use wasm_bindgen_futures::*;
+use web_sys::Element;
 use yew::prelude::*;
 extern crate console_error_panic_hook;
 use std::panic;
-use types::JsTree;
+use types::{Cytoscape, JsTree};
 use yew::services::ConsoleService;
 
 #[wasm_bindgen(start)]
@@ -47,6 +48,61 @@ extern "C" {
 #[wasm_bindgen]
 extern "C" {
     fn treeMaker(spec: JsValue, option: JsValue);
+}
+
+#[wasm_bindgen]
+extern "C" {
+    fn cytoscape(spec: JsValue);
+}
+
+#[wasm_bindgen]
+pub fn call_cytoscape() {
+    let window = web_sys::window().expect("no global `window` exists");
+    let document = window.document().expect("should have a document on window");
+    let body = document.body().expect("document should have a body");
+
+    // Manufacture the element we're gonna append
+    let val = document
+        .get_element_by_id("cy")
+        .expect("not cy dom element found");
+
+    let cy: types::Cytoscape = crate::types::Cytoscape {
+        container: val,
+        autounselectify: true,
+        boxSelectionEnabled: false,
+        layout: serde_json::from_str(r##"{ "layout":{"name":"cola"}}"##).expect("bad layout man "),
+        style: serde_json::from_str(r##"{"style":[{"selector":"node","css":{"background-color":"#f92411"}},{"selector":"edge","css":{"line-color":"#f92411"}}]}"##).expect("badstyleman"),
+        elements: serde_json::from_str(r##"{
+      "nodes":[
+         {
+            "data":{
+               "id":"1",
+               "label":"P"
+            }
+         },
+         {
+            "data":{
+               "id":"2",
+               "label":"sucrose phosphate phosphatase"
+            }
+         },
+         {
+            "data":{
+               "source":"1",
+               "target":"2"
+            }
+         }
+      ]
+    }}"##).expect("bad nodes man"),
+};
+
+    render_cytoscape(cy);
+}
+
+fn render_cytoscape(c: Cytoscape) -> Result<(), Box<dyn std::error::Error>> {
+    let spec_obj = JsValue::from_serde(&c).expect("bad json opts");
+    cytoscape(spec_obj);
+    Ok(())
 }
 
 #[wasm_bindgen]
@@ -138,5 +194,5 @@ pub fn render_chart(
         });
     }
 
-    Ok(())
+    Ok
 }
