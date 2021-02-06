@@ -144,31 +144,30 @@ impl Component for Home {
 
         if !self.state.get_search_loaded {
             html! {
-            <>
-                            <SearchButton on_search=search_handler.clone() />
-                            <div class="loading_spinner_container">
-                                <div class="loading_spinner"></div>
-                                <div class="loading_spinner_text">{"Loading ..."}</div>
-                            </div>
-                            </>
-                        }
-        } else if let Some(error) = &self.state.get_search_error {
-            html! {
-                <>
-                <SearchButton on_search=search_handler.clone() />
-              <div>
-                <span>{"Error loading family! :("}</span>
-                <div>{error}</div>
-              </div>
-              </>
+                <div class="loading_spinner_container">
+                    <div class="loading_spinner"></div>
+                    <div class="loading_spinner_text">{"Loading ..."}</div>
+                </div>
             }
         } else {
+            let the_header = "Header";
             html! {
-              <>
-                  <SearchButton on_search=search_handler.clone() />
-                  <BioPanel family=self.state.family.clone()/>
-                  <GraphPanel family=self.state.family.clone()/>
-                  </>
+            <div class="wrapper">
+            <header class="main-head">{the_header}</header>
+
+            <article class="content">
+                <SearchButton on_search=search_handler.clone() />
+            </article>
+
+            <article class="content">
+                <BioPanel family=self.state.family.clone()/>
+            </article>
+
+            <article>
+                <GraphPanel family=self.state.family.clone()/>
+            </article>
+            <footer class="main-footer">{the_header}</footer>
+            </div>
             }
         }
     }

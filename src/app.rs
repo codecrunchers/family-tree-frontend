@@ -56,7 +56,6 @@ impl Component for App {
 
         html! {
             <>
-                <GraphPanel family=self.state.family.clone()/>
                 <Router<Route, ()> render=render/>
             </>
         }
