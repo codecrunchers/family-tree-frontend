@@ -1,4 +1,4 @@
-use crate::call_cytoscape;
+use crate::call_cytoscape_shim;
 use crate::types::Person;
 use yew::prelude::*;
 
@@ -35,15 +35,15 @@ impl Component for GraphPanel {
     }
 
     fn view(&self) -> Html {
-        use crate::call_tree;
         html! {
          <>
             <div>{"Tree Representation"}</div>
-            <div id="cy"/>
+            <div id="cy" class="main"/>
                 <button
                     class="msger-send-btn"
-                    onclick=self.link.callback(|_| call_cytoscape() )
-                />
+                    onclick=self.link.callback(|_| call_cytoscape_shim("".into()) )>
+                    {"Graph"}
+                    </button>
             </>
         }
     }

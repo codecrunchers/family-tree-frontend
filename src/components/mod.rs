@@ -6,6 +6,3 @@ pub use graph_panel::GraphPanel;
 
 mod bio_panel;
 pub use bio_panel::BioPanel;
-
-mod example;
-pub use example::call_vega;

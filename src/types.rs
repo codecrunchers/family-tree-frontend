@@ -18,16 +18,10 @@ pub struct Person {
 }
 
 #[derive(Deserialize, Serialize, Clone, Debug)]
-pub struct JsTree {
-    pub id: String,
-    pub treeParams: std::collections::HashMap<String, String>,
-}
-
 pub struct Cytoscape {
-    container: web_sys::Element,
-    autounselectify: bool,
-    boxSelectionEnabled: bool,
-    layout: Value, //HashMap<String, HashMap<String, String>>,
-    style: Value,
-    elements: Value,
+    //    pub autounselectify: bool,
+    //    pub boxSelectionEnabled: bool,
+    pub layout: Value,
+    pub style: Value,
+    pub elements: Value,
 }
