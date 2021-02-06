@@ -19,8 +19,8 @@ pub struct Person {
 
 #[derive(Deserialize, Serialize, Clone, Debug)]
 pub struct Cytoscape {
-    //    pub autounselectify: bool,
-    //    pub boxSelectionEnabled: bool,
+    pub autounselectify: bool,
+    pub boxSelectionEnabled: bool,
     pub layout: Value,
     pub style: Value,
     pub elements: Value,

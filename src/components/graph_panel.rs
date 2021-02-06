@@ -38,7 +38,7 @@ impl Component for GraphPanel {
         html! {
          <>
             <div>{"Tree Representation"}</div>
-            <div id="cy" class="main"/>
+             <div id="cy"/>
                 <button
                     class="msger-send-btn"
                     onclick=self.link.callback(|_| call_cytoscape_shim("".into()) )>
