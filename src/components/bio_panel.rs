@@ -37,35 +37,70 @@ impl Component for BioPanel {
     fn view(&self) -> Html {
         ConsoleService::debug(format!("bio data {:?}", self.props.family).as_str());
 
-        let family: Vec<u32> = self
+        let mut count = 0;
+        let prev= "Prev";
+        let next = "Next";
+        let family: Vec<Html> = self
             .props
             .family
             .data
             .clone()
             .iter_mut()
-            .flat_map(|g| g.graph.nodes.iter().map(|n| 1))
-            .collect();
+            .flat_map(move |g| {
+                count = count + 1;
+                g.graph.nodes.iter().map(move |n| {
+                    ConsoleService::debug(format!("Node {:?}", n).as_str());
 
-        /*        let family: Vec<Html> = self.props.family.data.clone().iter_mut().flat_map(|g| {
-                    let family = g
-                        .graph
-                        .nodes
-                        .into_iter()
-                        .flat_map(|n| {
-                            html! {
-                            <div class="product_card_container">
-                                <div  classes="product_card_anchor">
-                                    <div class="product_card_name">{n.properties.get("name").unwrap()}</div>
-                                </div>
+                    if n.labels.contains(&"Person".to_string()) {
+                        let person = n.properties.get("name").unwrap();
+                        if count == 1 {
+                        html! {
+                            <div class="carousel-item active">
+                                 <img class="d-block w-100" src="https://placeimg.com/1080/500/animals" alt="First slide"/>
+            <div class="carousel-caption d-none d-md-block">
+                <h5>{next}</h5>
+                <p>{prev}</p>
+            </div>
                             </div>
-                            }
-                        }).collect()
-                }).collect();
-        */
+                        }
+                        }else{                        
+                        html! {
+                            <div class="carousel-item">
+                               <img src="/imgs/unknown_female.png" class="d-block w-100" alt="..."/>
+                                <div class="carousel-caption d-none d-md-block">
+                                   <h5>{person} {count} {"b"}</h5>
+                                   <p>{"Nulla vitae elit libero, a pharetra augue mollis interdum."}</p>
+                               </div>
+                            </div>
+                        }
+                        }
+                    } else {
+                        html! {}
+                    }
+                })
+            })
+        .collect();
+
 
         html! {
-
-            <div class="product_card_list">{family}</div>
+            <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+    <ol class="carousel-indicators">
+        <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+        <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+        <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+    </ol>
+    <div class="carousel-inner">
+    {family}
+    </div>
+    <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="sr-only">{prev}</span>
+    </a>
+    <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="sr-only">{next}</span>
+    </a>
+</div>
         }
     }
 }
