@@ -1,5 +1,6 @@
 use crate::call_cytoscape_shim;
 use crate::types::{CyElemData, CytoscapeElements};
+use serde_json::{json, Result, Value};
 use wasm_bindgen::{prelude::*, JsCast};
 use yew::prelude::*;
 
@@ -51,13 +52,14 @@ impl Component for GraphPanel {
                     //                    .filter(|g| g.labels.contains(&"Person".to_string()))
                     .map(|n| CyElemData {
                         data: [
-                            ("id".to_owned(), n.id.to_string()),
+                            ("id".to_owned(), json!(n.id.to_string())),
                             (
                                 "name".to_owned(),
-                                n.properties
+                                json!(n
+                                    .properties
                                     .get("name")
-                                    .unwrap_or(&"relationship".to_string())
-                                    .to_owned(),
+                                    .unwrap_or(&json!("Family"))
+                                    .to_owned()),
                             ),
                         ]
                         .iter()
@@ -80,9 +82,12 @@ impl Component for GraphPanel {
                     //          yew::services::ConsoleService::debug(format!("g rels {:?}", r).as_str());
                     CyElemData {
                         data: [
-                            ("id".to_owned(), format!("{}{}", r.startNode, r.endNode)),
-                            ("source".to_owned(), r.startNode.clone()),
-                            ("target".to_owned(), r.endNode.clone()),
+                            (
+                                "id".to_owned(),
+                                json!(format!("{}{}", r.startNode, r.endNode)),
+                            ),
+                            ("source".to_owned(), json!(r.startNode.clone())),
+                            ("target".to_owned(), json!(r.endNode.clone())),
                         ]
                         .iter()
                         .cloned()

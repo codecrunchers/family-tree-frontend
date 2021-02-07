@@ -29,5 +29,5 @@ pub struct CytoscapeElements {
 
 #[derive(Deserialize, Serialize, Clone, Debug)]
 pub struct CyElemData {
-    pub data: std::collections::HashMap<String, String>,
+    pub data: std::collections::HashMap<String, Value>,
 }

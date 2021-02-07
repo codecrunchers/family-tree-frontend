@@ -49,10 +49,10 @@ impl Component for BioPanel {
             .clone()
             .iter_mut()
             .flat_map(move |g| {
-                g.graph.nodes.iter().map(move |n| {
-
-                    if n.labels.contains(&"Person".to_string()) {
-                        let person = n.properties.get("name").unwrap();
+                g.graph.nodes.iter()
+                    .filter(|g| g.labels.contains(&"Person".to_string()))
+                    .map(move |n| {
+                        let person = n.properties.get("fullName").unwrap();
                         if first_bio == true {
                             first_bio = false;
                         html! {
@@ -75,9 +75,6 @@ impl Component for BioPanel {
                             </div>
                         }
                         }
-                    } else {
-                        html! {}
-                    }
                 })
             })
         .collect();
