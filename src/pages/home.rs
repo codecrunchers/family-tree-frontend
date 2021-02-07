@@ -62,9 +62,9 @@ impl Component for Home {
                     self.state.get_search_loaded = false;
                     let handler = self.link.callback(
                         move |response: api::FetchResponse<CypherGraphResult>| {
-                            ConsoleService::debug(format!("Json Response {:?}", response).as_str());
+                            //                            ConsoleService::debug(format!("Json Response {:?}", response).as_str());
                             let (_, Json(data)) = response.into_parts();
-                            ConsoleService::debug(format!("Json Parts {:?}", data).as_str());
+                            //                          ConsoleService::debug(format!("Json Parts {:?}", data).as_str());
                             match data {
                                 Ok(family) => Msg::GetSearchSuccess(family),
                                 Err(err) => Msg::GetSearchError(err),
@@ -82,9 +82,9 @@ impl Component for Home {
 
                     let handler = self.link.callback(
                         move |response: api::FetchResponse<CypherGraphResult>| {
-                            ConsoleService::debug(format!("Json Response {:?}", response).as_str());
+                            //ConsoleService::debug(format!("Json Response {:?}", response).as_str());
                             let (_, Json(data)) = response.into_parts();
-                            ConsoleService::debug(format!("Json Parts {:?}", data).as_str());
+                            //ConsoleService::debug(format!("Json Parts {:?}", data).as_str());
                             match data {
                                 Ok(family) => Msg::GetSearchSuccess(family),
                                 Err(err) => Msg::GetSearchError(err),
