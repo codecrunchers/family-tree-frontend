@@ -8,8 +8,9 @@ mod pages;
 mod route;
 mod types;
 
+use components::html::{LAYOUT, STYLE};
 use std::panic;
-use types::Cytoscape;
+use types::{Cytoscape, CytoscapeElements};
 use wasm_bindgen::prelude::*;
 use yew::prelude::*;
 
@@ -30,219 +31,18 @@ extern "C" {
     fn cytoscape_shim(spec: JsValue);
 }
 
+///We can only pass Where T : FromWasmAbi, so some type casting is used here
+///prob very slow, need to right this
 #[wasm_bindgen]
-pub fn call_cytoscape_shim(spec: String) {
+pub fn call_cytoscape_shim(cg: JsValue) {
+    let cgno: CytoscapeElements = JsValue::into_serde(&cg).unwrap();
+
     let cy: types::Cytoscape = crate::types::Cytoscape {
         autounselectify: false,
         boxSelectionEnabled: true,
-        layout: serde_json::from_str(
-            r##"{
-               "name":"cola",
-               "convergenceThreshold":100,
-               "animate":false
-            }"##,
-        )
-        .expect("bad layout man"),
-        style: serde_json::from_str(
-            r##"[
-            {
-             "selector": "node",
-              "style": {
-               "label": "data(id)"
-               }
-              },
-              {
-                "selector": "edge",
-                "css": {
-                   "line-color": "#f92411"
-                }
-               }
-              ]"##,
-        )
-        .expect("bad style man"),
-        elements: serde_json::from_str(
-            r##"{
-       "nodes":[
-          {
-             "data":{
-                "id":"A",
-                "name":"A"
-             }
-          },
-          {
-             "data":{
-                "id":"B",
-                "name":"B"
-             }
-          },
-          {
-             "data":{
-                "id":"C"
-             }
-          },
-          {
-             "data":{
-                "id":"D"
-             }
-          },
-          {
-             "data":{
-                "id":"E"
-             }
-          },
-          {
-             "data":{
-                "id":"F"
-             }
-          },
-          {
-             "data":{
-                "id":"G"
-             }
-          },
-          {
-             "data":{
-                "id":"H"
-             }
-          },
-          {
-             "data":{
-                "id":"J"
-             }
-          },
-          {
-             "data":{
-                "id":"K"
-             }
-          },
-          {
-             "data":{
-                "id":"L"
-             }
-          },
-          {
-             "data":{
-                "id":"M"
-             }
-          }
-       ],
-       "edges":[
-          {
-             "data":{
-                "id":"e1",
-                "source":"A",
-                "target":"B"
-             }
-          },
-          {
-             "data":{
-                "id":"e2",
-                "source":"A",
-                "target":"C"
-             }
-          },
-          {
-             "data":{
-                "id":"e3",
-                "source":"B",
-                "target":"D"
-             }
-          },
-          {
-             "data":{
-                "id":"e4",
-                "source":"C",
-                "target":"D"
-             }
-          },
-          {
-             "data":{
-                "id":"e5",
-                "source":"C",
-                "target":"E"
-             }
-          },
-          {
-             "data":{
-                "id":"e6",
-                "source":"C",
-                "target":"F"
-             }
-          },
-          {
-             "data":{
-                "id":"e7",
-                "source":"D",
-                "target":"G"
-             }
-          },
-          {
-             "data":{
-                "id":"e8",
-                "source":"D",
-                "target":"H"
-             }
-          },
-          {
-             "data":{
-                "id":"e9",
-                "source":"E",
-                "target":"H"
-             }
-          },
-          {
-             "data":{
-                "id":"e10",
-                "source":"E",
-                "target":"J"
-             }
-          },
-          {
-             "data":{
-                "id":"e11",
-                "source":"F",
-                "target":"J"
-             }
-          },
-          {
-             "data":{
-                "id":"e12",
-                "source":"F",
-                "target":"K"
-             }
-          },
-          {
-             "data":{
-                "id":"e13",
-                "source":"G",
-                "target":"L"
-             }
-          },
-          {
-             "data":{
-                "id":"e14",
-                "source":"H",
-                "target":"L"
-             }
-          },
-          {
-             "data":{
-                "id":"e15",
-                "source":"H",
-                "target":"M"
-             }
-          },
-          {
-             "data":{
-                "id":"e16",
-                "source":"J",
-                "target":"M"
-             }
-          }
-       ]
-}"##,
-        )
-        .expect("bad nodes man"),
+        layout: serde_json::from_str(LAYOUT).expect("bad layout man"),
+        style: serde_json::from_str(STYLE).expect("bad style man"),
+        elements: serde_json::to_value(&cgno).unwrap(),
     };
 
     let x = render_cytoscape(cy);

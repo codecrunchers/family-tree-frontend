@@ -1,5 +1,23 @@
-use yew::html;
+pub const LAYOUT: &'static str = r##"{
+               "name":"cola",
+               "convergenceThreshold":100,
+               "animate":false
+            }"##;
 
+pub const STYLE: &'static str = r##"[
+            {
+             "selector": "node",
+              "style": {
+               "label": "data(name)"
+               }
+              },
+              {
+                "selector": "edge",
+                "css": {
+                   "line-color": "#f92411"
+                }
+               }
+              ]"##;
 pub fn bio_panel_view(family: Vec<yew::Html>) -> yew::Html {
     let prev = "Previous";
     let next = "Next";

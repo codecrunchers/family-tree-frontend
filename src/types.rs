@@ -20,3 +20,14 @@ pub struct Cytoscape {
     pub style: Value,
     pub elements: Value,
 }
+
+#[derive(Deserialize, Serialize, Clone, Debug, Default)]
+pub struct CytoscapeElements {
+    pub nodes: Vec<CyElemData>,
+    pub edges: Vec<CyElemData>,
+}
+
+#[derive(Deserialize, Serialize, Clone, Debug)]
+pub struct CyElemData {
+    pub data: std::collections::HashMap<String, String>,
+}

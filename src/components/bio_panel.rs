@@ -39,7 +39,9 @@ impl Component for BioPanel {
     fn view(&self) -> Html {
         ConsoleService::debug(format!("bio data {:?}", self.props.family).as_str());
 
+        //this no worky RCs needed I think
         let mut first_bio = true;
+
         let family: Vec<Html> = self
             .props
             .family
