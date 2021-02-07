@@ -1,6 +1,5 @@
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
-use web_sys::Element;
 
 #[derive(Deserialize, Serialize, Clone, Debug)]
 pub struct QueryResponse {

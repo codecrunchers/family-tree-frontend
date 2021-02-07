@@ -46,30 +46,26 @@ impl Component for GraphPanel {
             .clone()
             .iter_mut()
             .flat_map(|g| {
-                g.graph
-                    .nodes
+                g.graph.nodes.iter().map(|n| CyElemData {
+                    data: [
+                        ("id".to_owned(), json!(n.id.to_string())),
+                        (
+                            "name".to_owned(),
+                            json!(n
+                                .properties
+                                .get("fullName")
+                                .unwrap_or(&json!("Family"))
+                                .to_owned()),
+                        ),
+                    ]
                     .iter()
-                    //                    .filter(|g| g.labels.contains(&"Person".to_string()))
-                    .map(|n| CyElemData {
-                        data: [
-                            ("id".to_owned(), json!(n.id.to_string())),
-                            (
-                                "name".to_owned(),
-                                json!(n
-                                    .properties
-                                    .get("name")
-                                    .unwrap_or(&json!("Family"))
-                                    .to_owned()),
-                            ),
-                        ]
-                        .iter()
-                        .cloned()
-                        .collect(),
-                    })
+                    .cloned()
+                    .collect(),
+                })
             })
             .collect();
 
-        yew::services::ConsoleService::debug(format!("Nodes {:?}", nodes).as_str());
+        //    yew::services::ConsoleService::debug(format!("Nodes {:?}", nodes).as_str());
 
         let edges: Vec<CyElemData> = self
             .props
@@ -97,14 +93,14 @@ impl Component for GraphPanel {
             })
             .collect();
 
-        yew::services::ConsoleService::debug(format!("edges {:?}", edges).as_str());
+        //      yew::services::ConsoleService::debug(format!("edges {:?}", edges).as_str());
 
         let cg: CytoscapeElements = CytoscapeElements {
             nodes: nodes,
             edges: edges,
         };
 
-        yew::services::ConsoleService::debug(format!("labels {:?}", cg).as_str());
+        //        yew::services::ConsoleService::debug(format!("labels {:?}", cg).as_str());
 
         html! {
          <>
