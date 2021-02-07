@@ -1,6 +1,7 @@
 use crate::call_cytoscape_shim;
-use crate::types::Person;
 use yew::prelude::*;
+
+use rusted_cypher::cypher::result::CypherGraphResult;
 
 pub struct GraphPanel {
     props: Props,
@@ -9,7 +10,7 @@ pub struct GraphPanel {
 
 #[derive(Properties, Clone)]
 pub struct Props {
-    pub family: Vec<Person>,
+    pub family: CypherGraphResult,
 }
 
 pub enum Msg {

@@ -1,5 +1,6 @@
-use crate::types::Person;
+use rusted_cypher::cypher::result::{CypherGraphNode, CypherGraphResult};
 use yew::prelude::*;
+use yew::services::ConsoleService;
 
 pub struct BioPanel {
     props: Props,
@@ -8,7 +9,7 @@ pub struct BioPanel {
 
 #[derive(Properties, Clone)]
 pub struct Props {
-    pub family: Vec<Person>,
+    pub family: CypherGraphResult,
 }
 
 pub enum Msg {
@@ -34,22 +35,33 @@ impl Component for BioPanel {
     }
 
     fn view(&self) -> Html {
-        let family: Vec<Html> = self
+        ConsoleService::debug(format!("bio data {:?}", self.props.family).as_str());
+
+        let family: Vec<u32> = self
             .props
             .family
-            .iter()
-            .map(|person: &Person| {
-                html! {
-                <div class="product_card_container">
-                    <div  classes="product_card_anchor">
-                        <div class="product_card_name">{&person.name}</div>
-                        <div class="product_card_name">{&person.bio}</div>
-                        <div class="product_card_name">{person.pid}</div>
-                    </div>
-                </div>
-                    }
-            })
+            .data
+            .clone()
+            .iter_mut()
+            .flat_map(|g| g.graph.nodes.iter().map(|n| 1))
             .collect();
+
+        /*        let family: Vec<Html> = self.props.family.data.clone().iter_mut().flat_map(|g| {
+                    let family = g
+                        .graph
+                        .nodes
+                        .into_iter()
+                        .flat_map(|n| {
+                            html! {
+                            <div class="product_card_container">
+                                <div  classes="product_card_anchor">
+                                    <div class="product_card_name">{n.properties.get("name").unwrap()}</div>
+                                </div>
+                            </div>
+                            }
+                        }).collect()
+                }).collect();
+        */
 
         html! {
 

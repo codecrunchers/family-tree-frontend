@@ -8,13 +8,8 @@ pub struct QueryResponse {
 }
 
 #[derive(Deserialize, Serialize, Clone, Debug)]
-pub struct Person {
-    pub pid: i32,
+pub struct FamilyMember {
     pub name: String,
-    pub bio: String,
-    //    pub image: String,
-    //    pub dod: String,
-    pub dob: String,
 }
 
 #[derive(Deserialize, Serialize, Clone, Debug)]

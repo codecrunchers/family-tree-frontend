@@ -1,16 +1,30 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
-  <head>
-    <link rel="stylesheet" href="styles.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.18.0/cytoscape.min.js" integrity="sha512-bg1QBgIk64XNmh8qAaxY2W6TKZ4/Q2sbPQLJ+1vhT3BD+DXXzAqhIbWdgeM82XWcbJKblEoSNhXiakf1NlWU3g==" crossorigin="anonymous"></script>    
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.18.0/cytoscape.min.js" integrity="sha512-bg1QBgIk64XNmh8qAaxY2W6TKZ4/Q2sbPQLJ+1vhT3BD+DXXzAqhIbWdgeM82XWcbJKblEoSNhXiakf1NlWU3g==" crossorigin="anonymous"></script>    
   <script src="http://marvl.infotech.monash.edu/webcola/cola.js"></script>
   <script src="/js/cytoscape-cola.js"></script>
+  <script src="/js/cytoscape-shim.js"></script><!-- use this to work around DOM Element Serialisation constraints in WASM-->
 
-   <script src="/js/cytoscape-shim.js"></script><!-- use this to work around DOM Element Serialisation constraints in WASM-->
- </head>
+   <!-- Bootstrap core CSS -->
+<link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Custom styles for this template -->
+  <link href="styles.css" rel="stylesheet">
+</head>
+<body>
 
-  <body class="wrapper">
+    <div class="loading_spinner_container">
+        <div class="loading_spinner"></div>
+        <div class="loading_spinner_text">{"Loading ..."}</div>
+    </div>
+
      <script type="module">
             import init from "/wasm.js";
             init();

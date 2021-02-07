@@ -1,3 +1,4 @@
+#![recursion_limit = "256"]
 extern crate console_error_panic_hook;
 
 mod api;

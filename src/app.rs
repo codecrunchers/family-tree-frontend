@@ -1,13 +1,12 @@
-use crate::components::GraphPanel;
 use crate::pages::Home;
 use crate::route::Route;
-use crate::types::Person;
+use rusted_cypher::cypher::result::CypherGraphResult;
 use yew::prelude::*;
 use yew::services::ConsoleService;
 use yew_router::prelude::*;
 
 struct State {
-    family: Vec<Person>,
+    family: CypherGraphResult,
 }
 
 pub struct App {
@@ -24,7 +23,7 @@ impl Component for App {
     type Properties = ();
 
     fn create(_: Self::Properties, link: ComponentLink<Self>) -> Self {
-        let family = vec![];
+        let family: CypherGraphResult = Default::default();
 
         Self {
             state: State { family },
@@ -43,7 +42,7 @@ impl Component for App {
     }
 
     fn view(&self) -> Html {
-        let handle_search = self.link.callback(|name: String| Msg::Search(name));
+        //        let handle_search = self.link.callback(|name: String| Msg::Search(name));
         let family = self.state.family.clone();
 
         ConsoleService::info(format!("Family = {:?}", family).as_str());
