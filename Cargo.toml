@@ -34,7 +34,7 @@ features = ["serde-serialize"]
 version = "0.2.70"
 
 [dependencies.web-sys]
-features = ["Window", "Document", "Element", "HtmlElement"]
+features = ["Window", "Document", "Element", "HtmlElement", "HtmlImageElement", "UiEvent", "Event", "EventTarget" ]
 version = "0.3.47"
 
 [dependencies.wee_alloc]

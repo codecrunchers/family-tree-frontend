@@ -106,29 +106,28 @@ pub fn bio_panel_bio(
             {
                 if n.properties.get("gender").unwrap() == "female"  {
                     yew::html!{
-                        <img src="imgs/unknown_female.png" class="card-img-top" alt="{person}" onmousedown={bio_select_handle} onclick=bio_search_handle/>
+                        <img src="imgs/unknown_female.png" class="card-img-top" alt={n.properties.get("fullName").unwrap()} onmousedown={bio_select_handle} onclick={bio_search_handle}/>
                     }
                 }else{
                     yew::html!{
-                        <img src="imgs/unknown_male.png" class="card-img-top" alt="{n.properties.get('name').unwrap()}" onmousedown={bio_select_handle} onclick=bio_search_handle/>
-
+                        <img src="imgs/unknown_male.png" class="card-img-top" alt={n.properties.get("fullName").unwrap()} onmousedown={bio_select_handle} onclick={bio_search_handle}/>
                     }
                 }
             }
            { for n.properties.iter().map(|hme| {
-                                             html!{
-                                                 <div class="card-body">
-                                                     <h5 class="card-title">{hme.0}</h5>
-                                                     <p class="card-text">{hme.1}</p>
-                                                  </div>
-                                             }
-                                         })}
+                     html!{
+                         <div class="card-body">
+                             <h5 class="card-title">{hme.0}</h5>
+                             <p class="card-text">{hme.1}</p>
+                          </div>
+                     }
+                 })
+           }
 
         </div>
-
-                                                     <p class="card-text">
-                                                     <small class="text-muted">{"Last updated 3 mins ago"}</small>
-                                                     </p>
+            <p class="card-text">
+            <small class="text-muted">{"Last updated 3 mins ago"}</small>
+            </p>
         </div>
     }
 }

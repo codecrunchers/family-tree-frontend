@@ -1,9 +1,6 @@
 use crate::call_cytoscape_shim;
-use serde_json::json;
-use wasm_bindgen::prelude::*;
+use rusted_cypher::cypher::result::CypherGraphResult;
 use yew::prelude::*;
-
-use rusted_cypher::cypher::result::{CypherGraphNode, CypherGraphResult};
 
 pub struct GraphPanel {
     props: Props,

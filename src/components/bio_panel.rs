@@ -1,6 +1,7 @@
-use crate::call_cytoscape_shim;
 use crate::components::html::{bio_panel_bio, bio_panel_view};
-use rusted_cypher::cypher::result::{CNode, CypherGraphNode, CypherGraphResult};
+use rusted_cypher::cypher::result::CypherGraphResult;
+use wasm_bindgen::JsCast;
+use web_sys::{HtmlElement, HtmlImageElement};
 use yew::prelude::*;
 use yew::services::ConsoleService;
 
@@ -54,8 +55,16 @@ impl Component for BioPanel {
     }
 
     fn view(&self) -> Html {
-        let bio_select = self.link.callback(|_i: MouseEvent| {
-            Msg::SetValue("Sis Healy".to_string() /*i.region().unwrap()*/)
+        let bio_select = self.link.callback(|m: MouseEvent| {
+            let elem = m
+                .target()
+                .unwrap()
+                .dyn_ref::<HtmlImageElement>()
+                .unwrap()
+                .clone();
+
+            ConsoleService::log(format!("{}", elem.alt()).as_str());
+            Msg::SetValue(elem.alt())
         });
 
         let bio_search = self.link.callback(|_| Msg::Search);
