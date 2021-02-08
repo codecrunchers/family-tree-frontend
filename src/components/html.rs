@@ -115,14 +115,20 @@ pub fn bio_panel_bio(n: &CNode) -> yew::Html {
                     }
                 }
             }
-          <div class="card-body">
-            <h5 class="card-title">{n.properties.get("fullName").unwrap()}</h5>
-            <p class="card-text">{"This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer."}</p>
-          <p class="card-text">
-           <small class="text-muted">{"Last updated 3 mins ago"}</small>
-          </p>
-      </div>
-    </div>
-    </div>
+           { for n.properties.iter().map(|hme| {
+                                             html!{
+                                                 <div class="card-body">
+                                                     <h5 class="card-title">{hme.0}</h5>
+                                                     <p class="card-text">{hme.1}</p>
+                                                  </div>
+                                             }
+                                         })}
+
+        </div>
+
+                                                     <p class="card-text">
+                                                     <small class="text-muted">{"Last updated 3 mins ago"}</small>
+                                                     </p>
+        </div>
     }
 }

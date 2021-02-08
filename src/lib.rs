@@ -30,6 +30,12 @@ pub fn run_app() {
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
 #[wasm_bindgen]
+#[no_mangle]
+pub fn callback_test(name: String) -> Result<(), JsValue> {
+    Ok(())
+}
+
+#[wasm_bindgen]
 extern "C" {
     fn cytoscape_shim(spec: JsValue);
 }

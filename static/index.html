@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <base href=".">
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -27,7 +28,7 @@
     </div>
 
      <script type="module">
-            import init from "/wasm.js";
+         import init, {callback_test} from "/wasm.js";
             init();
      </script>
 
