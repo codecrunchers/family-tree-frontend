@@ -2,6 +2,12 @@
 use crate::components::{BioPanel, GraphPanel, SearchButton};
 use rusted_cypher::cypher::result::{CNode, CypherGraphResult};
 
+macro_rules! remove_quotes {
+    ($input:expr) => {
+        $input.replace("\"", "")
+    };
+}
+
 use wasm_bindgen::prelude::*;
 use yew::prelude::*;
 
@@ -94,30 +100,36 @@ pub fn bio_panel_view(family: Vec<yew::Html>) -> yew::Html {
 
 /**
  * this renders the Bio, accepts a CNode
+ * it accepts two handle, the select handler sets the Person to be searched for to the value of the
+ * image alt tag, the second just invokes search
  **/
 pub fn bio_panel_bio(
     n: &CNode,
     bio_select_handle: yew::Callback<MouseEvent>,
     bio_search_handle: yew::Callback<MouseEvent>,
 ) -> yew::Html {
+    let name: String = n.properties.get("fullName").unwrap().to_string();
+    let name = remove_quotes!(name);
     yew::html! {
         <div class="col">
             <div class="card">
             {
                 if n.properties.get("gender").unwrap() == "female"  {
                     yew::html!{
-                        <img src="imgs/unknown_female.png" class="card-img-top" alt={n.properties.get("fullName").unwrap()} onmousedown={bio_select_handle} onclick={bio_search_handle}/>
+                        <img src="imgs/unknown_female.png" class="card-img-top" alt={name.clone()} onmousedown={bio_select_handle} onclick={bio_search_handle}/>
                     }
                 }else{
                     yew::html!{
-                        <img src="imgs/unknown_male.png" class="card-img-top" alt={n.properties.get("fullName").unwrap()} onmousedown={bio_select_handle} onclick={bio_search_handle}/>
+                        <img src="imgs/unknown_male.png" class="card-img-top" alt={name.clone()} onmousedown={bio_select_handle} onclick={bio_search_handle}/>
                     }
                 }
             }
+
+            <h5 class="card-title">{name}</h5>
            { for n.properties.iter().map(|hme| {
                      html!{
                          <div class="card-body">
-                             <h5 class="card-title">{hme.0}</h5>
+                             <h7 class="card-title">{hme.0}</h7>
                              <p class="card-text">{hme.1}</p>
                           </div>
                      }

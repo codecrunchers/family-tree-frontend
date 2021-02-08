@@ -64,6 +64,9 @@ fn render_cytoscape(c: Cytoscape) -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
+/**
+ * Given a Graph Format Response from Neo4J , return all the nodes
+ **/
 fn get_nodes(graph: &mut Vec<CypherGraphNode>) -> Vec<CyElemData> {
     graph
         .iter_mut()
@@ -88,6 +91,10 @@ fn get_nodes(graph: &mut Vec<CypherGraphNode>) -> Vec<CyElemData> {
         .collect()
 }
 
+/**
+ * Given a Graph Format Response from Neo4J , return all the edges
+ *
+ **/
 fn get_edges(graph: &mut Vec<CypherGraphNode>) -> Vec<CyElemData> {
     graph
         .iter_mut()

@@ -64,10 +64,14 @@ impl Component for BioPanel {
                 .clone();
 
             ConsoleService::log(format!("{}", elem.alt()).as_str());
+            m.stop_propagation();
             Msg::SetValue(elem.alt())
         });
 
-        let bio_search = self.link.callback(|_| Msg::Search);
+        let bio_search = self.link.callback(|m: MouseEvent| {
+            m.stop_propagation();
+            Msg::Search
+        });
 
         let f1 = self.props.family.data.clone();
         let mut family: Vec<_> = f1
