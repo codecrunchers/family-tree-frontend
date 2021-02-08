@@ -1,10 +1,10 @@
 use crate::call_cytoscape_shim;
 use crate::types::{CyElemData, CytoscapeElements};
-use serde_json::{json, Result, Value};
-use wasm_bindgen::{prelude::*, JsCast};
+use serde_json::json;
+use wasm_bindgen::prelude::*;
 use yew::prelude::*;
 
-use rusted_cypher::cypher::result::{CypherGraphNodeObj, CypherGraphResult};
+use rusted_cypher::cypher::result::CypherGraphResult;
 
 pub struct GraphPanel {
     props: Props,

@@ -1,4 +1,7 @@
 use crate::api;
+use percent_encoding::{percent_decode, utf8_percent_encode, AsciiSet, CONTROLS};
+
+use crate::components::html::{home_loading, home_view};
 use crate::components::{BioPanel, GraphPanel, SearchButton};
 use anyhow::Error;
 use rusted_cypher::cypher::result::CypherGraphResult;
@@ -6,6 +9,8 @@ use yew::format::Json;
 use yew::prelude::*;
 use yew::services::fetch::FetchTask;
 use yew::services::ConsoleService;
+
+const FRAGMENT: &AsciiSet = &CONTROLS.add(b' ').add(b'"').add(b'<').add(b'>').add(b'`');
 
 struct State {
     family: CypherGraphResult,
@@ -62,9 +67,7 @@ impl Component for Home {
                     self.state.get_search_loaded = false;
                     let handler = self.link.callback(
                         move |response: api::FetchResponse<CypherGraphResult>| {
-                            //                            ConsoleService::debug(format!("Json Response {:?}", response).as_str());
                             let (_, Json(data)) = response.into_parts();
-                            //                          ConsoleService::debug(format!("Json Parts {:?}", data).as_str());
                             match data {
                                 Ok(family) => Msg::GetSearchSuccess(family),
                                 Err(err) => Msg::GetSearchError(err),
@@ -74,7 +77,12 @@ impl Component for Home {
                     ConsoleService::info(
                         format!("Searching for {}", name.clone().unwrap()).as_str(),
                     );
-                    self.task = Some(api::search(name.unwrap(), handler.clone()));
+
+                    let name = name.unwrap();
+                    let iter = utf8_percent_encode(&name, FRAGMENT);
+                    let encoded: String = iter.collect();
+
+                    self.task = Some(api::search(encoded, handler.clone()));
                     false
                 }
                 SearchType::FAMILY => {
@@ -98,10 +106,10 @@ impl Component for Home {
                 }
             },
             Msg::GetSearchSuccess(cypher_result) => {
-                ConsoleService::debug(format!("cypher_result {:?}", cypher_result).as_str());
+                //ConsoleService::debug(format!("cypher_result {:?}", cypher_result).as_str());
                 let family: CypherGraphResult = cypher_result;
                 self.state.family = family;
-                ConsoleService::debug(format!("Family {:?}", self.state.family).as_str());
+                //ConsoleService::debug(format!("Family {:?}", self.state.family).as_str());
                 self.state.get_search_loaded = true;
                 true
             }
@@ -125,47 +133,9 @@ impl Component for Home {
             .callback(|name: String| Msg::GetSearch(SearchType::ByName, Some(name)));
 
         if !self.state.get_search_loaded {
-            html! {
-                <div class="loading_spinner_container">
-                    <div class="loading_spinner"></div>
-                    <div class="loading_spinner_text">{"Loading ..."}</div>
-                </div>
-            }
+            home_loading()
         } else {
-            html! {
-                             <>
-                                 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-
-                                 <div class="container">
-                               <div class="row">
-                                 <div class="col-md-8">
-
-                                 <div class="card mb-4">
-                                     <div class="card-body">
-                                        <SearchButton on_search=search_handler.clone() />
-                                     </div>
-                                   </div>
-
-                                   <div class="card mb-4">
-                                     <div class="card-body">
-                                           <BioPanel family=self.state.family.clone()/>
-                                     </div>
-                                   </div>
-
-                                   <div class="card mb-4">
-                                     <div class="card-body">
-                                        <GraphPanel family=self.state.family.clone()/>
-                                     </div>
-                                   </div>
-
-                                </div>
-                             </div>
-                           </div>
-
-                           </>
-                               }
+            home_view(self.state.family.clone(), search_handler.clone())
         }
     }
 }

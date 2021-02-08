@@ -1,13 +1,12 @@
-use rusted_cypher::cypher::result::{CypherGraphNode, CypherGraphResult};
+use crate::components::html::{bio_panel_bio, bio_panel_view};
+use rusted_cypher::cypher::result::{CNode, CypherGraphNode, CypherGraphResult};
 use yew::prelude::*;
 use yew::services::ConsoleService;
-use crate::components::html::bio_panel_view;
 
 pub struct BioPanel {
     props: Props,
     link: ComponentLink<Self>,
 }
-
 
 #[derive(Properties, Clone)]
 pub struct Props {
@@ -32,55 +31,28 @@ impl Component for BioPanel {
     }
 
     fn change(&mut self, props: Self::Properties) -> ShouldRender {
-            self.props = props;
-            true
+        ConsoleService::debug(format!("Bio Change {:?}", props.family).as_str());
+        self.props = props;
+        true
     }
 
     fn view(&self) -> Html {
-        ConsoleService::debug(format!("bio data {:?}", self.props.family).as_str());
+        //        ConsoleService::debug(format!("bio data {:?}", self.props.family).as_str());
 
-        //this no worky RCs needed I think
-        let mut first_bio = true;
+        let mut f1 = self.props.family.data.clone();
 
-        let family: Vec<Html> = self
-            .props
-            .family
-            .data
-            .clone()
+        let family: Vec<Html> = f1
             .iter_mut()
-            .flat_map(move |g| {
-                g.graph.nodes.iter()
+            .flat_map(|g| {
+                ConsoleService::debug(format!("Graph: {:?}", g).as_str());
+                g.graph
+                    .nodes
+                    .iter()
                     .filter(|g| g.labels.contains(&"Person".to_string()))
-                    .map(move |n| {
-                        let person = n.properties.get("fullName").unwrap();
-                        if first_bio == true {
-                            first_bio = false;
-                        html! {
-                            <div class="carousel-item active">
-                                <img src="/imgs/unknown_male.png" class="d-block w-100" alt="..."/>
-                                <div class="carousel-caption d-none d-md-block">
-                                    <h5>{person}</h5>
-                                    <p>{"some text"}</p>
-                                </div>
-                             </div>
-                        }
-                        }else{                        
-                        html! {
-                            <div class="carousel-item">
-                               <img src="/imgs/unknown_female.png" class="d-block w-100" alt="..."/>
-                                <div class="carousel-caption d-none d-md-block">
-                                   <h5>{person}</h5>
-                                   <p>{"Nulla vitae elit libero, a pharetra augue mollis interdum."}</p>
-                               </div>
-                            </div>
-                        }
-                        }
-                })
+                    .map(|n| bio_panel_bio(n))
             })
-        .collect();
-    
+            .collect();
+
         bio_panel_view(family)
-
-
     }
 }

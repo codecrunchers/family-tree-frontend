@@ -8,4 +8,4 @@ mod bio_panel;
 pub use bio_panel::BioPanel;
 
 pub mod html;
-pub use html::{bio_panel_view, LAYOUT, STYLE};
+pub use html::{bio_panel_bio, bio_panel_view, home_loading, home_view, LAYOUT, STYLE};
