@@ -44,36 +44,34 @@ pub fn home_view(
 ) -> yew::Html {
     yew::html! {
     <>
-        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+             <div class="container">
+               <div class="row">
+                 <div class="col-md-8">
 
-                                     <div class="container">
-                                   <div class="row">
-                                     <div class="col-md-8">
+                    <div class="card mb-4">
+                     <div class="card-body">
+                        <SearchButton on_search=search_handler />
+                     </div>
+                   </div>
 
-                                     <div class="card mb-4">
-                                         <div class="card-body">
-                                            <SearchButton on_search=search_handler />
-                                         </div>
-                                       </div>
+                   <div class="card mb-4">
+                     <div class="card-body">
+                           <BioPanel family=family.clone()/>
+                     </div>
+                   </div>
 
-                                       <div class="card mb-4">
-                                         <div class="card-body">
-                                               <BioPanel family=family.clone()/>
-                                         </div>
-                                       </div>
-
-                                       <div class="card mb-4">
-                                         <div class="card-body">
-                                            <GraphPanel family=family.clone()/>
-                                         </div>
-                                       </div>
-
-                                    </div>
-                                 </div>
-                               </div>
-                               </>
+                   <div class="card mb-4">
+                     <div class="card-body">
+                        <GraphPanel family=family.clone()/>
+                     </div>
+                   </div>
+               </div>
+            </div>
+           </div>
+           </>
         }
 }
 
@@ -82,8 +80,6 @@ pub fn home_view(
  * html 'panels' as input
  */
 pub fn bio_panel_view(family: Vec<yew::Html>) -> yew::Html {
-    let prev = "Previous";
-    let next = "Next";
     yew::html! {
     <div class="container-fluid">
         <div class="scrolling-wrapper row flex-row flex-nowrap mt-4 pb-4 pt-2">
@@ -113,13 +109,10 @@ pub fn bio_panel_bio(n: &CNode) -> yew::Html {
             }
           <div class="card-body">
             <h5 class="card-title">{n.properties.get("fullName").unwrap()}</h5>
-            <p class="card-text">{"
-                                This is a wider card with supporting text below as a natural lead-in to
-                                additional content. This content is a little bit longer."}
-        </p>
-        <p class="card-text">
-          <small class="text-muted">{"Last updated 3 mins ago"}</small>
-        </p>
+            <p class="card-text">{"This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer."}</p>
+          <p class="card-text">
+           <small class="text-muted">{"Last updated 3 mins ago"}</small>
+          </p>
       </div>
     </div>
     </div>
