@@ -82,17 +82,12 @@ pub fn home_view(
  * this is the main view for the bio panel, it takes a list of
  * html 'panels' as input
  */
-pub fn bio_panel_view(
-    family: Vec<yew::Html>,
-    handler: yew::Callback<yew::events::Event>,
-) -> yew::Html {
-    let uid_for_image_hack = js_sys::Date::now();
+pub fn bio_panel_view(family: Vec<yew::Html>) -> yew::Html {
     yew::html! {
     <div class="container-fluid">
         <div class="scrolling-wrapper row flex-row flex-nowrap mt-4 pb-4 pt-2">
         {family}
         </div>
-        <img src={uid_for_image_hack} onerror=handler/>
     </div>
     }
 }

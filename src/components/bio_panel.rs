@@ -13,7 +13,7 @@ pub struct BioPanel {
 #[derive(Properties, Clone)]
 pub struct Props {
     pub family: CypherGraphResult,
-    pub on_search: Callback<String>,
+    //    pub on_search: Callback<String>,
 }
 
 pub enum Msg {
@@ -70,21 +70,6 @@ impl Component for BioPanel {
         family.dedup();
         let family: Vec<Html> = family.iter().map(|n| bio_panel_bio(n)).collect();
 
-        use crate::types::CytoscapeElements;
-        use crate::{get_edges, get_nodes};
-        use wasm_bindgen::prelude::*;
-
-        let nodes = get_nodes(&mut self.props.family.data.clone());
-        let edges = get_edges(&mut self.props.family.data.clone());
-
-        let cg: CytoscapeElements = CytoscapeElements {
-            nodes: nodes,
-            edges: edges,
-        };
-
-        let on_change_handler = self
-            .link
-            .callback(move |_| call_cytoscape_shim(JsValue::from_serde(&cg).unwrap()));
-        bio_panel_view(family, on_change_handler)
+        bio_panel_view(family)
     }
 }

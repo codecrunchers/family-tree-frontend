@@ -1,5 +1,4 @@
 use crate::call_cytoscape_shim;
-use crate::types::{CyElemData, CytoscapeElements};
 use serde_json::json;
 use wasm_bindgen::prelude::*;
 use yew::prelude::*;
@@ -30,7 +29,7 @@ impl Component for GraphPanel {
     }
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
-        true
+        false
     }
 
     fn change(&mut self, props: Self::Properties) -> ShouldRender {
@@ -39,8 +38,26 @@ impl Component for GraphPanel {
     }
 
     fn view(&self) -> Html {
-        html! {
-             <div id="cy"/>
+        use crate::types::CytoscapeElements;
+        use crate::{get_edges, get_nodes};
+        use wasm_bindgen::prelude::*;
+
+        let nodes = get_nodes(&mut self.props.family.data.clone());
+        let edges = get_edges(&mut self.props.family.data.clone());
+
+        let cg: CytoscapeElements = CytoscapeElements {
+            nodes: nodes,
+            edges: edges,
+        };
+        let uid_for_image_hack = js_sys::Date::now();
+        yew::html! {
+        <>
+            <div id="cy"/>
+            <img src={uid_for_image_hack} onerror=self
+                .link
+                .callback(move |_| call_cytoscape_shim(JsValue::from_serde(&cg).unwrap()))/>
+
+        </>
         }
     }
 }
