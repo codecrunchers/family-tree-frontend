@@ -9,8 +9,11 @@ mod route;
 mod types;
 
 use components::html::{LAYOUT, STYLE};
+use rusted_cypher::cypher::result::{CypherGraphNode, CypherGraphResult};
+use serde_json::json;
 use std::panic;
-use types::{Cytoscape, CytoscapeElements};
+use types::{CyElemData, Cytoscape, CytoscapeElements};
+
 use wasm_bindgen::prelude::*;
 use yew::prelude::*;
 
@@ -53,4 +56,52 @@ fn render_cytoscape(c: Cytoscape) -> Result<(), Box<dyn std::error::Error>> {
     let spec_obj = JsValue::from_serde(&c).expect("bad json opts");
     cytoscape_shim(spec_obj);
     Ok(())
+}
+
+fn get_nodes(graph: &mut Vec<CypherGraphNode>) -> Vec<CyElemData> {
+    graph
+        .iter_mut()
+        .flat_map(|g| {
+            g.graph.nodes.iter().map(|n| CyElemData {
+                data: [
+                    ("id".to_owned(), json!(n.id.to_string())),
+                    (
+                        "name".to_owned(),
+                        json!(n
+                            .properties
+                            .get("fullName")
+                            .unwrap_or(&json!("Family"))
+                            .to_owned()),
+                    ),
+                ]
+                .iter()
+                .cloned()
+                .collect(),
+            })
+        })
+        .collect()
+}
+
+fn get_edges(graph: &mut Vec<CypherGraphNode>) -> Vec<CyElemData> {
+    graph
+        .iter_mut()
+        .flat_map(move |g| {
+            g.graph.relationships.iter().map(|r| {
+                //          yew::services::ConsoleService::debug(format!("g rels {:?}", r).as_str());
+                CyElemData {
+                    data: [
+                        (
+                            "id".to_owned(),
+                            json!(format!("{}{}", r.startNode, r.endNode)),
+                        ),
+                        ("source".to_owned(), json!(r.startNode.clone())),
+                        ("target".to_owned(), json!(r.endNode.clone())),
+                    ]
+                    .iter()
+                    .cloned()
+                    .collect(),
+                }
+            })
+        })
+        .collect()
 }

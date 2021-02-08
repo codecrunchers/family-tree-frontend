@@ -4,7 +4,7 @@ use serde_json::json;
 use wasm_bindgen::prelude::*;
 use yew::prelude::*;
 
-use rusted_cypher::cypher::result::CypherGraphResult;
+use rusted_cypher::cypher::result::{CypherGraphNode, CypherGraphResult};
 
 pub struct GraphPanel {
     props: Props,
@@ -39,79 +39,8 @@ impl Component for GraphPanel {
     }
 
     fn view(&self) -> Html {
-        let nodes: Vec<CyElemData> = self
-            .props
-            .family
-            .data
-            .clone()
-            .iter_mut()
-            .flat_map(|g| {
-                g.graph.nodes.iter().map(|n| CyElemData {
-                    data: [
-                        ("id".to_owned(), json!(n.id.to_string())),
-                        (
-                            "name".to_owned(),
-                            json!(n
-                                .properties
-                                .get("fullName")
-                                .unwrap_or(&json!("Family"))
-                                .to_owned()),
-                        ),
-                    ]
-                    .iter()
-                    .cloned()
-                    .collect(),
-                })
-            })
-            .collect();
-
-        //    yew::services::ConsoleService::debug(format!("Nodes {:?}", nodes).as_str());
-
-        let edges: Vec<CyElemData> = self
-            .props
-            .family
-            .data
-            .clone()
-            .iter_mut()
-            .flat_map(move |g| {
-                g.graph.relationships.iter().map(|r| {
-                    //          yew::services::ConsoleService::debug(format!("g rels {:?}", r).as_str());
-                    CyElemData {
-                        data: [
-                            (
-                                "id".to_owned(),
-                                json!(format!("{}{}", r.startNode, r.endNode)),
-                            ),
-                            ("source".to_owned(), json!(r.startNode.clone())),
-                            ("target".to_owned(), json!(r.endNode.clone())),
-                        ]
-                        .iter()
-                        .cloned()
-                        .collect(),
-                    }
-                })
-            })
-            .collect();
-
-        //      yew::services::ConsoleService::debug(format!("edges {:?}", edges).as_str());
-
-        let cg: CytoscapeElements = CytoscapeElements {
-            nodes: nodes,
-            edges: edges,
-        };
-
-        //        yew::services::ConsoleService::debug(format!("labels {:?}", cg).as_str());
-
         html! {
-         <>
-            <div>{"Tree Representation"}</div>
              <div id="cy"/>
-                <button
-                    class="msger-send-btn"
-                    onclick=self.link.callback(move |_| call_cytoscape_shim( JsValue::from_serde(&cg).unwrap()) )>
-                    {"Graph"}
-                    </button>
-            </>
         }
     }
 }

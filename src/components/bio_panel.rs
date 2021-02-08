@@ -1,4 +1,6 @@
+use crate::call_cytoscape_shim;
 use crate::components::html::{bio_panel_bio, bio_panel_view};
+use crate::{get_edges, get_nodes};
 use rusted_cypher::cypher::result::{CNode, CypherGraphNode, CypherGraphResult};
 use yew::prelude::*;
 use yew::services::ConsoleService;
@@ -27,7 +29,7 @@ impl Component for BioPanel {
     }
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
-        true
+        false
     }
 
     fn change(&mut self, props: Self::Properties) -> ShouldRender {
@@ -37,8 +39,6 @@ impl Component for BioPanel {
     }
 
     fn view(&self) -> Html {
-        //ConsoleService::debug(format!("bio data {:?}", self.props.family).as_str());
-
         let f1 = self.props.family.data.clone();
         let mut family: Vec<_> = f1
             .iter()
@@ -51,35 +51,24 @@ impl Component for BioPanel {
             })
             .collect();
 
-        ConsoleService::debug(format!("family: {:?}", family.len()).as_str());
-        ConsoleService::debug(format!("family Obj: {:?}", family).as_str());
         family.sort_by(|a, b| b.id.cmp(&a.id));
         family.dedup();
-        ConsoleService::debug(format!("family: {:?}", family.len()).as_str());
-        ConsoleService::debug(format!("family  Obj: {:?}", family).as_str());
-
         let family: Vec<Html> = family.iter().map(|n| bio_panel_bio(n)).collect();
-        /*let f1 = self.props.family.data.clone();
-        let family: Vec<Html> = f1
-            .iter()
-            .flat_map(|g| {
-                g.graph
-                    .nodes
-                    .iter()
-                    .filter(move |g| g.labels.contains(&"Person".to_string()))
-                    .map(move |n| {
-                        ConsoleService::debug(
-                            format!("Processing Node {:?}", n.properties.get("fullName")).as_str(),
-                        );
-                        //ConsoleService::debug(format!("Cur Dupe List {:?}", dd1).as_str())
 
-                        let id = n.properties.get("person_id").unwrap();
-                        ConsoleService::debug(format!("Person: {}", id).as_str());
-                        bio_panel_bio(n)
-                    })
-            })
-            .collect();*/
+        use crate::types::CytoscapeElements;
+        use wasm_bindgen::prelude::*;
 
-        bio_panel_view(family)
+        let nodes = get_nodes(&mut self.props.family.data.clone());
+        let edges = get_edges(&mut self.props.family.data.clone());
+
+        let cg: CytoscapeElements = CytoscapeElements {
+            nodes: nodes,
+            edges: edges,
+        };
+
+        let on_change_handler = self
+            .link
+            .callback(move |_| call_cytoscape_shim(JsValue::from_serde(&cg).unwrap()));
+        bio_panel_view(family, on_change_handler)
     }
 }

@@ -12,6 +12,7 @@ wasm-bindgen-futures = "0.4.20"
 yew = "0.17"
 yew-router = "0.14.0"
 
+
 [dependencies.console_error_panic_hook]
 optional = false
 version = "0.1.6"
