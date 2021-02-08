@@ -56,13 +56,13 @@ pub fn home_view(
 
                     <div class="card mb-4">
                      <div class="card-body">
-                        <SearchButton on_search=search_handler />
+                        <SearchButton on_search=search_handler.clone() />
                      </div>
                    </div>
 
                    <div class="card mb-4">
                      <div class="card-body">
-                           <BioPanel family=family.clone()/>
+                           <BioPanel family=family.clone() on_search=search_handler.clone() />
                      </div>
                    </div>
 
@@ -95,18 +95,23 @@ pub fn bio_panel_view(family: Vec<yew::Html>) -> yew::Html {
 /**
  * this renders the Bio, accepts a CNode
  **/
-pub fn bio_panel_bio(n: &CNode) -> yew::Html {
+pub fn bio_panel_bio(
+    n: &CNode,
+    bio_select_handle: yew::Callback<MouseEvent>,
+    bio_search_handle: yew::Callback<MouseEvent>,
+) -> yew::Html {
     yew::html! {
         <div class="col">
             <div class="card">
             {
                 if n.properties.get("gender").unwrap() == "female"  {
                     yew::html!{
-                        <img src="imgs/unknown_female.png" class="card-img-top" alt="{person}" />
+                        <img src="imgs/unknown_female.png" class="card-img-top" alt="{person}" onmousedown={bio_select_handle} onclick=bio_search_handle/>
                     }
                 }else{
                     yew::html!{
-                        <img src="imgs/unknown_male.png" class="card-img-top" alt="{person}" />
+                        <img src="imgs/unknown_male.png" class="card-img-top" alt="{n.properties.get('name').unwrap()}" onmousedown={bio_select_handle} onclick=bio_search_handle/>
+
                     }
                 }
             }

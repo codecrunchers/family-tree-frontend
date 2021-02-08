@@ -13,7 +13,7 @@ pub struct BioPanel {
 #[derive(Properties, Clone)]
 pub struct Props {
     pub family: CypherGraphResult,
-    //    pub on_search: Callback<String>,
+    pub on_search: Callback<String>,
 }
 
 pub enum Msg {
@@ -34,8 +34,8 @@ impl Component for BioPanel {
     }
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
-        true
-        /*        match msg {
+        ConsoleService::debug(format!("Bio Change ").as_str());
+        match msg {
             Msg::SetValue(v) => {
                 self.value = v;
             }
@@ -44,7 +44,7 @@ impl Component for BioPanel {
                 self.props.on_search.emit(name.to_string());
             }
         }
-        true*/
+        true
     }
 
     fn change(&mut self, props: Self::Properties) -> ShouldRender {
@@ -54,6 +54,12 @@ impl Component for BioPanel {
     }
 
     fn view(&self) -> Html {
+        let bio_select = self.link.callback(|_i: MouseEvent| {
+            Msg::SetValue("Sis Healy".to_string() /*i.region().unwrap()*/)
+        });
+
+        let bio_search = self.link.callback(|_| Msg::Search);
+
         let f1 = self.props.family.data.clone();
         let mut family: Vec<_> = f1
             .iter()
@@ -68,7 +74,10 @@ impl Component for BioPanel {
 
         family.sort_by(|a, b| b.id.cmp(&a.id));
         family.dedup();
-        let family: Vec<Html> = family.iter().map(|n| bio_panel_bio(n)).collect();
+        let family: Vec<Html> = family
+            .iter()
+            .map(|n| bio_panel_bio(n, bio_select.clone(), bio_search.clone()))
+            .collect();
 
         bio_panel_view(family)
     }
