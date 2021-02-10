@@ -1,8 +1,8 @@
 .DS_Store
 /target
 Cargo.lock
-static/*.wasm
-static/*.d.ts
-static/wasm.js
-static/package.jsontags
+*.wasm
+*.d.ts
+wasm.js
+package.jsontags
 tags

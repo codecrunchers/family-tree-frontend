@@ -1,0 +1,34 @@
+.wrapper {
+  display: grid;
+  gap: 20px;
+  grid-template-areas:
+    "header"
+    "content"
+}
+
+.main-head {
+  grid-area: header;
+}
+.content {
+  grid-area: content;
+}
+.main-footer {
+  grid-area: footer;
+}
+
+
+#cy {
+  height: 400px;
+  width: 800px;
+}
+
+
+.scrolling-wrapper{
+	overflow-x: auto;
+}
+
+.subtitle{
+	font-size: 1.25em;
+	opacity: 0.65;
+}
+

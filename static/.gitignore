@@ -1,1 +1,4 @@
-*
+*.json
+*.wasm
+wasm*
+_redirects
