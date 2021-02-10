@@ -1,7 +1,6 @@
-# RustMart Yew Example
+# Rust WASM Family Tree Sample
 
-<p align="center"><img src="https://raw.githubusercontent.com/sheshbabu/rustmart-yew-example/master/banner.png" /></p>
+<p align="center"><img src="static/demo.png"/>
 
-Example Single Page Application built using Rust, Wasm and Yew. [Demo](https://rustmart-yew.netlify.app)
+Example Single Page Family Tree App, based on YewMart  Single Page [Demo](https://rustmart-yew.netlify.app)
 
-Read the [blog post](http://www.sheshbabu.com/posts/rust-wasm-yew-single-page-application/) for more details regarding setup and code organization.
