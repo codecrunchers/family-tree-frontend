@@ -5,6 +5,11 @@ use yew::prelude::*;
 use yew::services::ConsoleService;
 use yew_router::prelude::*;
 
+//TODO: this needs to be in config
+lazy_static::lazy_static! {
+    pub static ref ENV_FT_BACKEND: String = String::from("family.snarfel.com");
+}
+
 struct State {
     family: CypherGraphResult,
 }
@@ -49,7 +54,7 @@ impl Component for App {
 
         let render = Router::render(move |switch: Route| match switch {
             Route::HomePage => {
-                html! {<Home family=family.clone()  />}
+                html! {<Home family=family.clone() , neo_rest_service={ENV_FT_BACKEND.as_str()}  />}
             }
         });
 

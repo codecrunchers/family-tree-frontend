@@ -1,8 +1,8 @@
 use crate::api;
-use percent_encoding::{percent_decode, utf8_percent_encode, AsciiSet, CONTROLS};
+use percent_encoding::{utf8_percent_encode, AsciiSet, CONTROLS};
 
 use crate::components::html::{home_loading, home_view};
-use crate::components::{BioPanel, GraphPanel, SearchButton};
+//use crate::components::{GraphPanel, SearchButton};
 use anyhow::Error;
 use rusted_cypher::cypher::result::CypherGraphResult;
 use yew::format::Json;
@@ -21,6 +21,7 @@ struct State {
 #[derive(Properties, Clone)]
 pub struct Props {
     pub family: CypherGraphResult,
+    pub neo_rest_service: String,
 }
 
 pub struct Home {
@@ -82,7 +83,11 @@ impl Component for Home {
                     let iter = utf8_percent_encode(&name, FRAGMENT);
                     let encoded: String = iter.collect();
 
-                    self.task = Some(api::search(encoded, handler.clone()));
+                    self.task = Some(api::search(
+                        encoded,
+                        handler.clone(),
+                        self.props.neo_rest_service.clone(),
+                    ));
                     false
                 }
                 SearchType::FAMILY => {
@@ -101,7 +106,7 @@ impl Component for Home {
                     );
 
                     ConsoleService::info("Searching for Family");
-                    self.task = Some(api::family(handler));
+                    self.task = Some(api::family(handler, self.props.neo_rest_service.clone()));
                     false
                 }
             },

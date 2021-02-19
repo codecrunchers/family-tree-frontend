@@ -6,12 +6,16 @@ version = "0.1.0"
 [dependencies]
 anyhow = "1.0.32"
 js-sys = "0.3.47"
+lazy_static = "1.4.0" 
 percent-encoding = "2.1.0"
 serde_json = "1.0.62"
 wasm-bindgen-futures = "0.4.20"
 yew = "0.17"
 yew-router = "0.14.0"
 
+[dependencies.rusted_cypher]
+git="https://github.com/codecrunchers/rusted-cypher.git"
+branch="add_graph_response"
 
 [dependencies.console_error_panic_hook]
 optional = false
@@ -20,10 +24,6 @@ version = "0.1.6"
 [dependencies.futures-timer]
 features = ["wasm-bindgen"]
 version = "3.0.2"
-
-[dependencies.rusted_cypher]
-branch = "neo4j_41"
-path = "/home/alan/devel/rusted-cypher"
 
 [dependencies.serde]
 features = ["derive"]
@@ -34,7 +34,7 @@ features = ["serde-serialize"]
 version = "0.2.70"
 
 [dependencies.web-sys]
-features = ["Window", "Document", "Element", "HtmlElement", "HtmlImageElement", "UiEvent", "Event", "EventTarget" ]
+features = ["Window", "Document", "Element", "HtmlElement", "HtmlImageElement", "UiEvent", "Event", "EventTarget"]
 version = "0.3.47"
 
 [dependencies.wee_alloc]

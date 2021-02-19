@@ -8,20 +8,23 @@ use yew::services::ConsoleService;
 pub type FetchResponse<T> = Response<Json<Result<T, Error>>>;
 type FetchCallback<T> = Callback<FetchResponse<T>>;
 
-const API_SVC_HOST: &'static str = "192.168.1.8";
-
-pub fn search(name: String, callback: FetchCallback<CypherGraphResult>) -> FetchTask {
-    let req = Request::get(format!("http://{}:9090/search/{}", API_SVC_HOST, name))
+pub fn search(
+    name: String,
+    callback: FetchCallback<CypherGraphResult>,
+    api_svc_host: String,
+) -> FetchTask {
+    let req = Request::get(format!("http://{}:9090/search/{}", api_svc_host, name))
         .body(Nothing)
         .unwrap();
-    ConsoleService::debug(format!("Req {:?}", req).as_str());
+    ConsoleService::log(format!("Req {:?}", req).as_str());
     FetchService::fetch(req, callback).unwrap()
 }
 
-pub fn family(callback: FetchCallback<CypherGraphResult>) -> FetchTask {
-    let req = Request::get(format!("http://{}:9090/family", API_SVC_HOST))
+pub fn family(callback: FetchCallback<CypherGraphResult>, api_svc_host: String) -> FetchTask {
+    ConsoleService::info(format!("Target Host {}", api_svc_host).as_str());
+    let req = Request::get(format!("http://{}:9090/family", api_svc_host))
         .body(Nothing)
         .unwrap();
-    ConsoleService::debug(format!("Req {:?}", req).as_str());
+    ConsoleService::log(format!("Req {:?}", req).as_str());
     FetchService::fetch(req, callback).unwrap()
 }
