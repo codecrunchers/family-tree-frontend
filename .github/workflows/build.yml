@@ -1,16 +1,20 @@
 name: WASM Build
 
-on:
-push:
-  branches:
-    - master
+on: [push]
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v1
-      - uses: icepuma/rust-action@master
-        with:
-          args: cargo fmt --check
+      - name: Checkout 
+        uses: actions/checkout@v1
+
+      - name: Install Rust Toolchains
+        uses: actions-rs/toolchain@v1
+        with: toolchain: nightly
+              default: true
+              override: true
+
+      - name: Build
+        run: cargo build
