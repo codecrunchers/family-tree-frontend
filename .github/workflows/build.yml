@@ -12,7 +12,8 @@ jobs:
 
       - name: Install Rust Toolchains
         uses: actions-rs/toolchain@v1
-        with: toolchain: nightly
+        with: 
+              toolchain: nightly
               default: true
               override: true
 
