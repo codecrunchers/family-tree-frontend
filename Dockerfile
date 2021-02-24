@@ -1,6 +1,9 @@
 FROM nginx:latest
 ARG RELEASE
 WORKDIR /usr/share/nginx/html
-RUN curl -S -L "https://github.com/codecrunchers/family-tree-frontend/archive/v${RELEASE}.tar.gz"   | tar -xz --strip 1
+RUN curl -S -L  "https://codeload.github.com/codecrunchers/family-tree-frontend/tar.gz/v${RELEASE}"  | tar -xz --strip 1
 COPY static/ .
+
+
+
 
