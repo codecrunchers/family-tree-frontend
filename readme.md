@@ -1,6 +1,6 @@
 # Rust WASM Family Tree Sample
 
-<p align="center"><img src="static/demo.png"/>
+<p align="center"><img src="static/imgs/unknown_female"/>
 
-Example Single Page Family Tree App, based on YewMart  Single Page [Demo](https://rustmart-yew.netlify.app)
+Family Tree with Neo4J
 
