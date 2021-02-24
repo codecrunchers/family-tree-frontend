@@ -24,13 +24,13 @@ jobs:
         with:
               version: 'latest'                
       - name: Build
-        run: wasm-pack build --dev --target web --out-name wasm --out-dir ./static -- --all-features
+        run: wasm-pack build --dev --target web --out-name wasm --out-dir static -- --all-features
 
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
-            ./static/
+            /home/runner/work/family-tree-frontend/family-tree-frontend/static/
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  
