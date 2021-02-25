@@ -6,8 +6,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-
-
     steps:
       - name: Checkout 
         uses: actions/checkout@v1
@@ -31,6 +29,6 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
-            /home/runner/work/family-tree-frontend/family-tree-frontend/static/
+            ./static
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  
