@@ -1,6 +1,9 @@
 name: WASM Build
 
-on: [push]
+on:
+  push:
+    tags:
+      - 'v*.*.*'  
 
 jobs:
   build:
@@ -26,10 +29,12 @@ jobs:
 
       - name: Release
         uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
         with:
           fail_on_unmatched_files: true
           files: |
             ./family-tree-frontend/family-tree-frontend/static
+            family-tree-frontend/static
+            ./static
+            static
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  
