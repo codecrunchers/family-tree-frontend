@@ -34,10 +34,19 @@ jobs:
         env:
           REMOTE_BASH_URL: https://raw.githubusercontent.com/codecrunchers/family-tree-frontend/master/ls.sh        
 
+      - name: Compress Web Dir
+        uses: master-atul/tar-action@v1.0.2
+        id: compress
+        with:
+          command: c
+          files: |
+            ./static
+          outPath: web.tar.gz            
+
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            static/**/*/
+            web.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  
