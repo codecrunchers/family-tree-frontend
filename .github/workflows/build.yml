@@ -38,10 +38,6 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            static/*
-            static/vendor/
-            static/css/
-            static/imgs/
-            static/js/
+            static/**/*/
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  
