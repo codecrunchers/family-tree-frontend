@@ -39,5 +39,9 @@ jobs:
         with:
           files: |
             static/*
+            static/vendor/
+            static/css/
+            static/imgs/
+            static/js/
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  
